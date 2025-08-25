@@ -10,24 +10,42 @@
 * Käyttäjä pystyy valitsemaan harjoitteelle toistojen kuvauksen, toistojen määrän, mahdollisen painon ja sarjojen määrän.
 * Jokaiseen harjoitteeseen on yhdistetty tilastot: kuinka monta kertaa sarja on tehty ja milloin
 
-## Sovelluksen asennus
+## Sovelluksen ajaminen
 
-Asenna riippuvuudet
+Ensin .env-tiedosto
+
+1. Kopioi `.env.example` tiedostoon `.env`
+2. Luo `SECRET_KEY` ajamalla komento
+```bash
+python ./scripts/create_key.py
+```
+2. Kopioi saamasi avain ja talleta se muuttujalle `SECRET_KEY`
+
+Sen jälkeen voit ajaa sovelluksen. Elämää helpottaaksesi voit ajaa skriptin `run-app.sh`, joka asentaa kaikki riippuvuudet, alustaa tietokannan, jos sitä ei ole olemassa (WIP) ja käynnistää sovelluksen. Vaihtoehtoisesti voit tehdä kaikki vaiheet erikseen:
+
+1. Asenna riippuvuudet
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Luo ja alusta tietokanta (WIP)
+2. Luo ja alusta tietokanta (WIP)
 
 ```bash
 sqlite3 database.db < schema.sql
 sqlite3 database.db < init.sql
 ```
 
-Käynnistä sovellus
+3. Käynnistä sovellus
 
 ```bash
 flask run
-````
+```
 
+## Dev mode
+
+Jos haluat hot reloadin ja nähdä kattavampia debug lokeja, aja
+
+```bash
+./run-app.sh --dev
+```
