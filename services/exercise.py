@@ -1,12 +1,21 @@
 import database.db as db
 
 def get_user_exercises(user_id):
-    sql = """SELECT e.id, e.title, s.weight, s.set_amount, s.rep_amount
+    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
+             FROM exercises e
+             WHERE e.user_id = ?
+             """
+    exercises = db.query(sql, [user_id])
+    return exercises
+
+def get_user_stats(user_id):
+    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
              FROM exercises e
              JOIN stats s ON e.id = s.exercise_id
              WHERE s.user_id = ?
              """
     exercises = db.query(sql, [user_id])
+    print(exercises)
     return exercises
 
 def create_exercise(user_id, title, set_amount, rep_amount, weight, description):

@@ -19,9 +19,11 @@
     <div class="fp__exercises">
         <h2>Harjoitteet</h2>
         {% for e in exercises %}
-            {% if e %}
-                <p>{{ e.id }}</p>
-            {% endif %}
+        <div class="exercises__item"> 
+            <p>{{ e.id }}</p>
+            <p>{{ e.title }}</p>
+            <p>{{ e.goal_set_amount }} x {{ e.goal_rep_amount }} x {{ e.goal_weight}}kg</p>
+        </div>
         {% endfor %}
         {% if not exercises|length %}
             <p>Ei harjoitteita. Lisää uusia nähdäksesi ne tässä.</p>

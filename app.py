@@ -32,8 +32,13 @@ def front_page():
     if login_check:
         return login_check
     
-    exercises = exerciseService.get_user_exercises(session["user_id"])
-    return render_template("index.html", excersises=exercises)
+    try:
+        exercises = exerciseService.get_user_exercises(session["user_id"])
+        print(exercises)
+    except:
+        exercises = []
+
+    return render_template("index.html", exercises=exercises)
 
 @app.route("/uusi", methods=["GET"])
 def new_exercise_page():
@@ -83,8 +88,10 @@ def new_exercise():
     description = request.form["description"]
 
     try:
+        exerciseService.create_exercise(user_id, title, set_amount, rep_amount, weight, description)
         flash("Lisäys onnistui!", "success")
         return redirect("/uusi")
+    
     except:
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
 
