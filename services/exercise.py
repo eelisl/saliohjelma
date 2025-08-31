@@ -8,6 +8,15 @@ def get_user_exercises(user_id):
     exercises = db.query(sql, [user_id])
     return exercises
 
+def get_exercise(exercise_id, user_id):
+    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.description
+             FROM exercises e
+             WHERE e.user_id = ? AND e.id = ?
+             """
+    print(sql)
+    exercises = db.query(sql, [user_id, exercise_id])
+    return exercises[0]
+
 def get_user_stats(user_id):
     sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
              FROM exercises e
@@ -15,7 +24,6 @@ def get_user_stats(user_id):
              WHERE s.user_id = ?
              """
     exercises = db.query(sql, [user_id])
-    print(exercises)
     return exercises
 
 def create_exercise(user_id, title, set_amount, rep_amount, weight, description):
@@ -27,11 +35,11 @@ def create_exercise(user_id, title, set_amount, rep_amount, weight, description)
 
 def edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description):
     sql = """UPDATE exercises 
-             SET title = ?, description = ?, goal_weight = ?, goal_set_amount = ?, goal_rep_amount = ?, user_id = ?
-             WHERE id = ?
+             SET title = ?, description = ?, goal_weight = ?, goal_set_amount = ?, goal_rep_amount = ?
+             WHERE id = ? AND user_id = ?
              """
-    result = db.execute(sql, [title, description, weight, set_amount, rep_amount, user_id, exercise_id])
-    return result.rowcount > 0
+    db.execute(sql, [title, description, weight, set_amount, rep_amount, exercise_id, user_id])
+    return True
 
 def delete_exercise(exercise_id, user_id):
     sql = "DELETE FROM exercises WHERE id = ? AND user_id = ?"

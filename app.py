@@ -9,10 +9,10 @@ app.secret_key = config.SECRET_KEY
 
 def require_login(f):
     @wraps(f)
-    def check_id():
+    def check_id(*args, **kwargs):
         if "user_id" not in session:
             return redirect("/login")
-        return f()
+        return f(*args, **kwargs)
     return check_id
 ##
 # PAGES
@@ -47,11 +47,17 @@ def front_page():
 def new_exercise_page():
     return render_template("new_exercise.html")
 
-# @app.route("/harjoitteet/<int:exercise_id>/muokkaa", method=["GET"])
-# @require_login
-# def edit_exercise_page():
-
-        
+@app.route("/harjoitteet/<int:exercise_id>/muokkaa", methods=["GET"])
+@require_login
+def edit_exercise_page(exercise_id):
+    try:
+        print(exercise_id, session["user_id"])
+        exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
+        return render_template("edit_exercise.html", exercise=exercise)
+    except Exception as e:
+        print(f"Error in edit_exercise_page: {e}")
+        flash("VIRHE: muokattavaa harjoitetta ei löytynyt.", "error")
+        return redirect("/")
 
 ##
 # API
@@ -114,9 +120,7 @@ def delete_exercise():
 
 @app.route("/api/exercise/<int:exercise_id>", methods=["POST"])
 @require_login
-def edit_exercise():
-    exercise_id = request.form["exercise_id"]
-
+def edit_exercise(exercise_id):
     if not exercise_id:
         flash("VIRHE: Joku meni vikaan muokkauksessa. Kokeile uudestaan.", "error")
         return redirect("/")
@@ -133,7 +137,8 @@ def edit_exercise():
         flash("Lisäys onnistui!", "success")
         return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
     
-    except:
+    except Exception as e:
+        print(f"Error in edit_exercise api: {e}")
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
         return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
 

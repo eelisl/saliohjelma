@@ -11,7 +11,7 @@
         <form class="new-exercise__input-container" method="post" action="/api/exercise">
             <label class="exercise__input-label">
                 Harjoitteen nimi
-                <input name="title" required/>
+                <input name="title" required maxlength="100"/>
             </label>
             <div class="exercise__input-group">
                 <label class="exercise__select">
@@ -31,8 +31,7 @@
             </div>
             <label class="exercise__input-label">
                 Ohjeet (valinnainen)
-                <textarea name="description">
-                    </textarea>
+                <textarea name="description" maxlength="300"></textarea>
             </label>
             <button>Luo uusi</button>
             <a href="/">Palaa etusivulle</a>

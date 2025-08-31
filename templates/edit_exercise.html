@@ -8,10 +8,10 @@
     <h1>Muokkaa harjoitetta</h1>
 
     <div class="new-exercise__container">
-        <form class="new-exercise__input-container" method="post" action="/api/exercise">
+        <form class="new-exercise__input-container" method="post" action="/api/exercise/{{ exercise.id }}">
             <label class="exercise__input-label">
                 Harjoitteen nimi
-                <input name="title" value="{{exercise.title}}" required/>
+                <input name="title" value="{{exercise.title}}" required maxlength="100"/>
             </label>
             <div class="exercise__input-group">
                 <label class="exercise__select">
@@ -21,7 +21,7 @@
                 <span> x </span>
                 <label class="exercise__select">
                     Toistot
-                    <input value="{{exercise.rep_set_amount}}" type="number" min="1" max="100" name="rep_amount" required/>
+                    <input value="{{exercise.goal_rep_amount}}" type="number" min="1" max="100" name="rep_amount" required/>
                 </label>
                 <span> x </span>
                 <label class="exercise__select">
@@ -31,10 +31,10 @@
             </div>
             <label class="exercise__input-label">
                 Ohjeet (valinnainen)
-                <textarea name="description" value="{{ exercise.description if exercise.description else None }}">
-                    </textarea>
+                <textarea name="description" maxlength="300">{{ exercise.description }}</textarea>
             </label>
             <button>Luo uusi</button>
+            <a href="/">Palaa etusivulle</a>
         </form>
 
     </div>
