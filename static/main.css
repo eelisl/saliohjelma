@@ -156,3 +156,41 @@ a {
 .quick-actions__selection:hover {
     transform: scale(1.1);
 }
+
+/* NEW EXERCISE */
+
+.new-exercise__container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    margin: 2rem 1rem;
+    max-width: 400px;
+}
+
+.new-exercise__input-container {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.exercise__input-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 1rem;
+}
+
+.exercise__input-group {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.exercise__select {
+    display: flex;
+    flex-direction: column;
+    max-width: 100px;
+    min-width: 50px;
+    margin-bottom: 1rem;
+}

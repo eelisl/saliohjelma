@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}Uusi harjoite{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <h1>Lisää uusi harjoite</h1>
+
+    <div class="new-exercise__container">
+        <form class="new-exercise__input-container" method="post" action="/api/exercise">
+            <label class="exercise__input-label">
+                Harjoitteen nimi
+                <input name="title" required/>
+            </label>
+            <div class="exercise__input-group">
+                <label class="exercise__select">
+                    Setit
+                    <input type="number" min="1" max="5" name="set_amount" required/>
+                </label>
+                <span> x </span>
+                <label class="exercise__select">
+                    Toistot
+                    <input type="number" min="1" max="100" name="rep_amount" required/>
+                </label>
+                <span> x </span>
+                <label class="exercise__select">
+                    Painot (kg)
+                    <input type="number" min="1" max="300" name="weight" required/>
+                </label>
+            </div>
+            <label class="exercise__input-label">
+                Ohjeet (valinnainen)
+                <textarea name="description">
+                    </textarea>
+            </label>
+            <button>Luo uusi</button>
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
