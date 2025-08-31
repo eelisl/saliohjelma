@@ -15,6 +15,9 @@
         <div class="navigation__logo">
             <p>Logo</p>
         </div>
+        {% if session.username %}
+            <p>Kirjautunut: {{session.username}}</p>
+        {% endif %}
         <div class="navigation__items">
             <a class="navigation__item">
                 Ohjelma
@@ -25,6 +28,7 @@
             <a class="navigation__item">
                 Profiili
             </a>
+
             <a href="/logout">
                 Kirjaudu ulos
             </a>
