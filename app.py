@@ -23,17 +23,18 @@ def front_page():
 def login_page():
     return render_template("login.html", hide_navigation=True)
 
-# TODO: not an actual route yet
-@app.route('/login', method="POST")
-def login():
-    return render_template("login.html", hide_navigation=True)
 
 @app.route('/register', methods=['GET'])
-def register():
+def register_page():
     return render_template("register.html", hide_navigation=True)
 
 # TODO: not an actual route yet
-@app.route('/register', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
+def login():
+    return render_template("login.html", hide_navigation=True)
+
+# TODO: not an actual route yet
+@app.route('/api/register', methods=['POST'])
 def register():
     return render_template("register.html", hide_navigation=True)
 
