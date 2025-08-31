@@ -34,9 +34,9 @@ def logout():
 @app.route("/", methods=["GET"])
 @require_login
 def front_page():
+    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
     try:
         exercises = exerciseService.get_user_exercises(session["user_id"])
-        print(exercises)
     except:
         exercises = []
 
@@ -50,6 +50,7 @@ def new_exercise_page():
 @app.route("/harjoitteet/<int:exercise_id>/muokkaa", methods=["GET"])
 @require_login
 def edit_exercise_page(exercise_id):
+    # Reason: if user has stale session and is not able to fetch, we need to have graceful error handling
     try:
         print(exercise_id, session["user_id"])
         exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
@@ -95,11 +96,11 @@ def new_exercise():
     weight = request.form["weight"]
     description = request.form["description"]
 
+    # Reason: if session is stale, we want to gracefully throw error
     try:
         exerciseService.create_exercise(user_id, title, set_amount, rep_amount, weight, description)
         flash("Lisäys onnistui!", "success")
         return redirect("/uusi")
-    
     except:
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
         return redirect("/uusi")
@@ -110,13 +111,11 @@ def delete_exercise():
     exercise_id = request.form["exercise_id"]
     user_id = session["user_id"]
     referrer = request.referrer
-    try:
-        exerciseService.delete_exercise(exercise_id, user_id)
-        flash("Harjoite poistettu.", "success")
-        return redirect(referrer)
-    except:
-        flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
-        return redirect(referrer)
+
+    exerciseService.delete_exercise(exercise_id, user_id)
+    flash("Harjoite poistettu.", "success")
+    return redirect(referrer)
+
 
 @app.route("/api/exercise/<int:exercise_id>", methods=["POST"])
 @require_login
@@ -132,11 +131,11 @@ def edit_exercise(exercise_id):
     weight = request.form["weight"]
     description = request.form["description"]
 
+    # Reason: if session is stale, we want to gracefully throw error
     try:
         exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description)
         flash("Lisäys onnistui!", "success")
         return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
-    
     except Exception as e:
         print(f"Error in edit_exercise api: {e}")
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")

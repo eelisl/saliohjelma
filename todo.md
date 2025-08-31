@@ -1,8 +1,8 @@
 ## Perustoiminnot
 
 [X] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
-[ ] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteita
-[ ] Käyttäjä näkee sovellukseen lisätyt tietokohteet
+[X] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteita
+[X] Käyttäjä näkee sovellukseen lisätyt tietokohteet
 [ ] Käyttäjä pystyy etsimään tietokohteita hakusanalla tai muulla perusteella
 [ ] Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet
 [ ] Käyttäjä pystyy valitsemaan tietokohteelle yhden tai useamman luokittelun
@@ -51,20 +51,20 @@
 
 [X] Taulut ja sarakkeet on nimetty englanniksi
 [X] Taulut ja sarakkeet on nimetty kuvaavasti
-[ ] Käytetty REFERENCES-määrettä, kun viittaus toiseen tauluun
-[ ] Ei kyselyjä muotoa SELECT \*
-[ ] Kaikki tiedot haetaan yhdellä SQL-kyselyllä, jos järkevästi mahdollista
-[ ] Koodissa ei tehdä asioita, jotka voi mielekkäästi tehdä SQL:ssä
-[ ] Käytetty try/except SQL-komennon ympärillä vain aiheellisesti
+[X] Käytetty REFERENCES-määrettä, kun viittaus toiseen tauluun
+[X] Ei kyselyjä muotoa SELECT \*
+[X] Kaikki tiedot haetaan yhdellä SQL-kyselyllä, jos järkevästi mahdollista
+[X] Koodissa ei tehdä asioita, jotka voi mielekkäästi tehdä SQL:ssä
+[X] Käytetty try/except SQL-komennon ympärillä vain aiheellisesti
 
 ## Turvallisuus
 
 [X] Salasanat tallennetaan tietokantaan asianmukaisesti
-[ ] Käyttäjän oikeus nähdä sivun sisältö tarkastetaan
-[ ] Käyttäjän oikeus lähettää lomake tarkastetaan
+[X] Käyttäjän oikeus nähdä sivun sisältö tarkastetaan
+[X] Käyttäjän oikeus lähettää lomake tarkastetaan
 [ ] Käyttäjän syötteet tarkastetaan ennen tietokantaan lisäämistä
 [X] SQL-komennoissa käytetty parametreja
-[ ] Sivut muodostetaan sivupohjien kautta
+[X] Sivut muodostetaan sivupohjien kautta
 [ ] Lomakkeissa on estetty CSRF-aukko
 
 ## Testaus
