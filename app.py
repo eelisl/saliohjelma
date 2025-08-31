@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, request
+from flask import Flask, render_template, session, redirect, request, flash
 import config
 import services.user as userService
 
@@ -44,7 +44,8 @@ def register():
     password_again = request.form["password2"]
 
     if password != password_again:
-        return "VIRHE: salasanat eivät ole samat"
+        flash("VIRHE: salasanat eivät ole samat", "error")
+        return redirect("/register")
     
     return userService.create_user(username, userService.generate_password_hash(password))
 

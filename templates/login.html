@@ -22,6 +22,21 @@
             <a href="/register" class="login__register-link">Eikö ole tunnusta? Rekisteröidy.</a>
         </div>
     </div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                {% if category == 'error':%}
+                <div class="error message">
+                    {{msg}}
+                </div>
+                {% else: %}
+                <div class="success message">
+                    {{msg}}
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </div>
 
 {% endblock %}
