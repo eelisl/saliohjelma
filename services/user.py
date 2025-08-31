@@ -18,13 +18,17 @@ def create_user(username, password_hash):
     
 def get_user(username, password):
     try:
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_hash = db.query(sql, [username])[0][0]
+        sql = "SELECT id, password_hash FROM users WHERE username = ?"
+        query = db.query(sql, [username])
+        password_hash = query[0][1]
+        user_id = query[0][0]
+        print(password_hash, user_id)
     except IndexError:
         flash("VIRHE: tapahtui virhe. Tarkista käyttäjätunnus ja salasana.", "error")
         return redirect("/login")
 
     if check_password_hash(password_hash, password):
+        session["user_id"] = user_id
         session["username"] = username
         return redirect("/")
     else:

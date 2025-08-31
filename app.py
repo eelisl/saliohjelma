@@ -1,21 +1,23 @@
 from flask import Flask, render_template, session, redirect, request, flash
 import config
 import services.user as userService
+import services.exercise as exerciseService
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
 def require_login():
-    if "username" not in session:
+    if "user_id" not in session:
         return redirect("/login")
 
 @app.route("/", methods=["GET"])
 def front_page():
-    require_login()
     login_check = require_login()
     if login_check:
         return login_check
-    return render_template("index.html")
+    
+    exercises = exerciseService.get_user_exercises(session["user_id"])
+    return render_template("index.html", excersises=exercises)
 
 @app.route("/login", methods=["GET"])
 def login_page():
@@ -28,7 +30,7 @@ def register_page():
 
 @app.route("/logout", methods=["GET"])
 def logout():
-    del session["username"]
+    del session["user_id"]
     return redirect("/")
 
 @app.route("/api/login", methods=["POST"])
