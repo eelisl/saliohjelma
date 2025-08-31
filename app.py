@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
 def require_login():
-    if "user_id" not in session:
+    if "username" not in session:
         return redirect("/login")
 
 @app.route("/", methods=["GET"])
@@ -31,17 +31,22 @@ def logout():
     del session["username"]
     return redirect("/")
 
-# TODO: not an actual route yet
 @app.route("/api/login", methods=["POST"])
 def login():
     username = request.form["username"]
     password = request.form["password"]
     return userService.get_user(username, password)
 
-# TODO: not an actual route yet
 @app.route("/api/register", methods=["POST"])
 def register():
-    return render_template("register.html", hide_navigation=True)
+    username = request.form["username"]
+    password = request.form["password1"]
+    password_again = request.form["password2"]
+
+    if password != password_again:
+        return "VIRHE: salasanat eivät ole samat"
+    
+    return userService.create_user(username, userService.generate_password_hash(password))
 
 if __name__ == "__main__":
     app.run(debug=True)
