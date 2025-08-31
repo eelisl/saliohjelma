@@ -7,20 +7,21 @@
 <div class="content login__area">
     <div class="login__container">
         <h2 class="login__title">Rekisteröidy</h1>
-        <div class="login__input-container">
+        <form class="login__input-container" method="post" action="/api/register">
             <label class="login__input-label">
                 Käyttäjätunnus: 
-                <input />
+                <input name="username" />
             </label>
             <label class="login__input-label">
                 Salasana: 
-                <input />
+                <input name="password1"/>
             </label>
             <label class="login__input-label">
                 Salasana uudelleen: 
-                <input />
+                <input name="password2"/>
             </label>
-        </div>
+            <button>Rekisteröidy</button>
+        </form>
         <div class="login__register-container">
             <a href="/login" class="login__register-link">Onko sinulla jo tunnus? Kirjaudu.</a>
         </div>
