@@ -23,6 +23,11 @@
             <p>{{ e.id }}</p>
             <p>{{ e.title }}</p>
             <p>{{ e.goal_set_amount }} x {{ e.goal_rep_amount }} x {{ e.goal_weight}}kg</p>
+            <form method="POST" action="/api/exercise/delete">
+                <input type="hidden" name="exercise_id" value="{{ e.id }}"/>
+                <button>Poista</button>
+            </form>
+            <a href="/edit/{{e.id}}">Muokkaa</a>
         </div>
         {% endfor %}
         {% if not exercises|length %}

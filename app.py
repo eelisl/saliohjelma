@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, render_template, session, redirect, request, flash
 import config
 import services.user as userService
@@ -6,9 +7,13 @@ import services.exercise as exerciseService
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
-def require_login():
-    if "user_id" not in session:
-        return redirect("/login")
+def require_login(f):
+    @wraps(f)
+    def check_id():
+        if "user_id" not in session:
+            return redirect("/login")
+        return f()
+    return check_id
 ##
 # PAGES
 ##
@@ -27,11 +32,8 @@ def logout():
     return redirect("/")
 
 @app.route("/", methods=["GET"])
+@require_login
 def front_page():
-    login_check = require_login()
-    if login_check:
-        return login_check
-    
     try:
         exercises = exerciseService.get_user_exercises(session["user_id"])
         print(exercises)
@@ -41,12 +43,15 @@ def front_page():
     return render_template("index.html", exercises=exercises)
 
 @app.route("/uusi", methods=["GET"])
+@require_login
 def new_exercise_page():
-    login_check = require_login()
-    if login_check:
-        return login_check
-
     return render_template("new_exercise.html")
+
+# @app.route("/harjoitteet/<int:exercise_id>/muokkaa", method=["GET"])
+# @require_login
+# def edit_exercise_page():
+
+        
 
 ##
 # API
@@ -75,11 +80,8 @@ def register():
 # Exercise
 
 @app.route("/api/exercise", methods=["POST"])
+@require_login
 def new_exercise():
-    login_check = require_login()
-    if login_check:
-        return login_check
-
     user_id = session["user_id"]
     title = request.form["title"]
     set_amount = request.form["set_amount"]
@@ -94,6 +96,46 @@ def new_exercise():
     
     except:
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
+        return redirect("/uusi")
+
+@app.route("/api/exercise/delete", methods=["POST"])
+@require_login
+def delete_exercise():
+    exercise_id = request.form["exercise_id"]
+    user_id = session["user_id"]
+    referrer = request.referrer
+    try:
+        exerciseService.delete_exercise(exercise_id, user_id)
+        flash("Harjoite poistettu.", "success")
+        return redirect(referrer)
+    except:
+        flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
+        return redirect(referrer)
+
+@app.route("/api/exercise/<int:exercise_id>", methods=["POST"])
+@require_login
+def edit_exercise():
+    exercise_id = request.form["exercise_id"]
+
+    if not exercise_id:
+        flash("VIRHE: Joku meni vikaan muokkauksessa. Kokeile uudestaan.", "error")
+        return redirect("/")
+    
+    user_id = session["user_id"]
+    title = request.form["title"]
+    set_amount = request.form["set_amount"]
+    rep_amount = request.form["rep_amount"]
+    weight = request.form["weight"]
+    description = request.form["description"]
+
+    try:
+        exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description)
+        flash("Lisäys onnistui!", "success")
+        return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+    
+    except:
+        flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
+        return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
 
 if __name__ == "__main__":
     app.run(debug=True)
