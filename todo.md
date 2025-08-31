@@ -1,4 +1,5 @@
 ## Perustoiminnot
+
 [ ] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
 [ ] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteitan
 [ ] Käyttäjä näkee sovellukseen lisätyt tietokohteet
@@ -8,6 +9,7 @@
 [ ] Käyttäjä pystyy lisäämään tietokohteeseen toissijaisia tietokohteita
 
 ## Perusvaatimukset
+
 [ ] Sovellus toteutettu kurssimateriaalin mukaisesti
 [ ] Sovellus toteutettu Pythonilla käyttäen Flask-kirjastoa
 [ ] Sovellus käyttää SQLite-tietokantaa
@@ -19,6 +21,7 @@
 [ ] Sovelluksen ulkoasu (HTML/CSS) on toteutettu itse ilman kirjastoja
 
 ## Käytettävyys
+
 [ ] Sovelluksen perustoiminnot toimivat
 [ ] CSS:n avulla toteutettu ulkoasu (itse tehty, ei CSS-kirjastoa)
 [ ] Sovellusta on helppoa ja loogista käyttää
@@ -36,25 +39,26 @@
 
 ## Ohjelmointityyli
 
-[ ] Koodi on kirjoitettu englanniksi	1–5
-[ ] Muuttujat ja funktiot nimetty kuvaavasti	4–5
-[ ] Sisennyksen leveys on neljä välilyöntiä	4–5
-[ ] Koodissa ei ole liian pitkiä rivejä	4–5
-[ ] Muuttujien ja funktioiden nimet muotoa total_count (ei totalCount)	4–5
-[ ] Välit oikein =- ja ,-merkkien ympärillä	4–5
-[ ] Ei ylimääräisiä sulkeita if- ja while-rakenteissa	4–5
+[ ] Koodi on kirjoitettu englanniksi
+[ ] Muuttujat ja funktiot nimetty kuvaavasti
+[ ] Sisennyksen leveys on neljä välilyöntiä
+[ ] Koodissa ei ole liian pitkiä rivejä
+[ ] Muuttujien ja funktioiden nimet muotoa total_count (ei totalCount)
+[ ] Välit oikein =- ja ,-merkkien ympärillä
+[ ] Ei ylimääräisiä sulkeita if- ja while-rakenteissa
 
 ## Tietokanta
 
 [ ] Taulut ja sarakkeet on nimetty englanniksi
 [ ] Taulut ja sarakkeet on nimetty kuvaavasti
 [ ] Käytetty REFERENCES-määrettä, kun viittaus toiseen tauluun
-[ ] Ei kyselyjä muotoa SELECT *
+[ ] Ei kyselyjä muotoa SELECT \*
 [ ] Kaikki tiedot haetaan yhdellä SQL-kyselyllä, jos järkevästi mahdollista
-[ ] Koodissa ei tehdä asioita, jotka voi mielekkäästi tehdä SQL:ssä	
+[ ] Koodissa ei tehdä asioita, jotka voi mielekkäästi tehdä SQL:ssä
 [ ] Käytetty try/except SQL-komennon ympärillä vain aiheellisesti
 
-## Turvallisuus 
+## Turvallisuus
+
 [ ] Salasanat tallennetaan tietokantaan asianmukaisesti
 [ ] Käyttäjän oikeus nähdä sivun sisältö tarkastetaan
 [ ] Käyttäjän oikeus lähettää lomake tarkastetaan

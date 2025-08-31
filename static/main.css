@@ -1,0 +1,100 @@
+/* TYPOGRAPHY */
+
+html,
+body {
+    margin: 0;
+}
+
+* {
+    font-family: 'Lexend', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 800;
+}
+
+p {
+    font-weight: 300;
+}
+
+/* LINKS AND BUTTONS*/
+
+a {
+    text-decoration: underline;
+}
+
+/* NAV */
+
+.navigation {
+    padding: 0.25rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navigation__items {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+/* CONTENT AREAS */
+
+.content {
+    padding: 2rem;
+    min-height: calc(100vh - 4rem);
+    min-width: calc(100vw - 4rem);
+}
+
+/* LOGIN */
+
+.login__area {
+    background-color: lightgreen;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login__container {
+    background-color: white;
+    border-radius: 10px;
+    padding: 2rem 3rem;
+    min-width: 250px;
+    text-align: center;
+}
+
+@media (max-width: 400px) {
+    .login__container {
+        min-width: initial;
+    }
+}
+
+.login__title {
+    margin-bottom: 1.5rem;
+}
+
+.login__input-container {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.login__input-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 1rem;
+}
+
+.login__register-container {
+    padding: 1rem;
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% if not hide_navigation %}
+    <div class="navigation">
+        <div class="navigation__logo">
+            <p>Logo</p>
+        </div>
+        <div class="navigation__items">
+            <a class="navigation__item">
+                Ohjelma
+            </a>
+            <a class="navigation__item">
+                Harjoitteet
+            </a>
+            <a class="navigation__item">
+                Profiili
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}  
+</body>
+</html>
