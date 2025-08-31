@@ -1,11 +1,13 @@
 import database.db as db
 
-def get_user_exercises(user_id):
+def get_user_exercises(user_id, query):
     sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
              FROM exercises e
              WHERE e.user_id = ?
              """
-    exercises = db.query(sql, [user_id])
+    if query:
+        sql += " AND e.title LIKE ?"
+    exercises = db.query(sql, [user_id] if not query else [user_id, query])
     return exercises
 
 def get_exercise(exercise_id, user_id):

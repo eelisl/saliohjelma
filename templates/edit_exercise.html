@@ -9,6 +9,7 @@
 
     <div class="new-exercise__container">
         <form class="new-exercise__input-container" method="post" action="/api/exercise/{{ exercise.id }}">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
             <label class="exercise__input-label">
                 Harjoitteen nimi
                 <input name="title" value="{{exercise.title}}" required maxlength="100"/>
@@ -33,7 +34,7 @@
                 Ohjeet (valinnainen)
                 <textarea name="description" maxlength="300">{{ exercise.description }}</textarea>
             </label>
-            <button>Luo uusi</button>
+            <button>Muokkaa</button>
             <a href="/">Palaa etusivulle</a>
         </form>
 

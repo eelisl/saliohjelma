@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, render_template, session, redirect, request, flash
+from flask import Flask, render_template, session, redirect, request, flash, abort
 import config
 import services.user as userService
 import services.exercise as exerciseService
@@ -14,6 +14,15 @@ def require_login(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return check_id
+
+def require_csrf(f):
+    @wraps(f)
+    def check_csrf(*args, **kwargs):
+        if request.form["csrf_token"] != session["csrf_token"]:
+            abort(403)
+        return f(*args, **kwargs)
+    return check_csrf
+
 ##
 # PAGES
 ##
@@ -34,13 +43,14 @@ def logout():
 @app.route("/", methods=["GET"])
 @require_login
 def front_page():
+    query = request.args.get("query")
     # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
     try:
-        exercises = exerciseService.get_user_exercises(session["user_id"])
+        exercises = exerciseService.get_user_exercises(session["user_id"], query)
     except:
         exercises = []
 
-    return render_template("index.html", exercises=exercises)
+    return render_template("index.html", exercises=exercises, query=query)
 
 @app.route("/uusi", methods=["GET"])
 @require_login
@@ -54,6 +64,8 @@ def edit_exercise_page(exercise_id):
     try:
         print(exercise_id, session["user_id"])
         exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
+        if not exercise:
+            abort(404)
         return render_template("edit_exercise.html", exercise=exercise)
     except Exception as e:
         print(f"Error in edit_exercise_page: {e}")
@@ -82,12 +94,17 @@ def register():
         flash("VIRHE: salasanat eivät ole samat", "error")
         return redirect("/register")
     
+    if not 3 < len(username) < 20:
+        flash("VIRHE: käyttäjätunnuksen pitää olla 3-20 merkkiä pitkä", "error")
+        return redirect("/register")
+    
     return userService.create_user(username, userService.generate_password_hash(password))
 
 # Exercise
 
 @app.route("/api/exercise", methods=["POST"])
 @require_login
+@require_csrf
 def new_exercise():
     user_id = session["user_id"]
     title = request.form["title"]
@@ -95,6 +112,22 @@ def new_exercise():
     rep_amount = request.form["rep_amount"]
     weight = request.form["weight"]
     description = request.form["description"]
+
+    if not title or not 1 < len(title) < 150:
+        flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
+        redirect("/uusi")
+    
+    if not set_amount or not 1 < int(set_amount) < 5:
+        flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
+        redirect("/uusi")
+
+    if not rep_amount or not 1 < int(rep_amount) < 50:
+        flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
+        redirect("/uusi")
+    
+    if not int(weight) < 200:
+        flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
+        redirect("/uusi")
 
     # Reason: if session is stale, we want to gracefully throw error
     try:
@@ -107,6 +140,7 @@ def new_exercise():
 
 @app.route("/api/exercise/delete", methods=["POST"])
 @require_login
+@require_csrf
 def delete_exercise():
     exercise_id = request.form["exercise_id"]
     user_id = session["user_id"]
@@ -119,6 +153,7 @@ def delete_exercise():
 
 @app.route("/api/exercise/<int:exercise_id>", methods=["POST"])
 @require_login
+@require_csrf
 def edit_exercise(exercise_id):
     if not exercise_id:
         flash("VIRHE: Joku meni vikaan muokkauksessa. Kokeile uudestaan.", "error")
@@ -131,11 +166,29 @@ def edit_exercise(exercise_id):
     weight = request.form["weight"]
     description = request.form["description"]
 
+
+    if not title or not 1 < len(title) < 150:
+        flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
+        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+    
+    if not set_amount or not 1 < int(set_amount) < 5:
+        flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
+        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+
+    if not rep_amount or not 1 < int(rep_amount) < 50:
+        flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
+        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+    
+    if not int(weight) < 200:
+        flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
+        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+
+
     # Reason: if session is stale, we want to gracefully throw error
     try:
         exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description)
-        flash("Lisäys onnistui!", "success")
-        return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        flash("Muokkaus onnistui!", "success")
+        return redirect(f"/")
     except Exception as e:
         print(f"Error in edit_exercise api: {e}")
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")

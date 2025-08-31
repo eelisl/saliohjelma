@@ -204,6 +204,11 @@ a {
 
 /* FRONTPAGE */
 
+.fp__exercises--title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .fp__exercises-container {
     display: flex;
     gap: 1rem;
@@ -274,3 +279,5 @@ a {
     background-color: rgb(255, 68, 68);
     color: white;
 }
+
+/* SEARCH */

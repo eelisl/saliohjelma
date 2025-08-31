@@ -3,7 +3,7 @@
 [X] Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen
 [X] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteita
 [X] Käyttäjä näkee sovellukseen lisätyt tietokohteet
-[ ] Käyttäjä pystyy etsimään tietokohteita hakusanalla tai muulla perusteella
+[X] Käyttäjä pystyy etsimään tietokohteita hakusanalla tai muulla perusteella
 [ ] Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet
 [ ] Käyttäjä pystyy valitsemaan tietokohteelle yhden tai useamman luokittelun
 [ ] Käyttäjä pystyy lisäämään tietokohteeseen toissijaisia tietokohteita
@@ -22,9 +22,9 @@
 
 ## Käytettävyys
 
-[ ] Sovelluksen perustoiminnot toimivat
+[X] Sovelluksen perustoiminnot toimivat
 [X] CSS:n avulla toteutettu ulkoasu (itse tehty, ei CSS-kirjastoa)
-[ ] Sovellusta on helppoa ja loogista käyttää
+[X] Sovellusta on helppoa ja loogista käyttää
 [ ] Käyttäjän lähettämässä tekstissä rivinvaihdot näkyvät selaimessa
 [ ] Kuvissa käytetty alt-attribuuttia (jos sovelluksessa kuvia)
 [X] Lomakkeissa käytetty label-elementtiä
@@ -62,10 +62,10 @@
 [X] Salasanat tallennetaan tietokantaan asianmukaisesti
 [X] Käyttäjän oikeus nähdä sivun sisältö tarkastetaan
 [X] Käyttäjän oikeus lähettää lomake tarkastetaan
-[ ] Käyttäjän syötteet tarkastetaan ennen tietokantaan lisäämistä
+[X] Käyttäjän syötteet tarkastetaan ennen tietokantaan lisäämistä
 [X] SQL-komennoissa käytetty parametreja
 [X] Sivut muodostetaan sivupohjien kautta
-[ ] Lomakkeissa on estetty CSRF-aukko
+[X] Lomakkeissa on estetty CSRF-aukko
 
 ## Testaus
 

@@ -9,6 +9,7 @@
 
     <div class="new-exercise__container">
         <form class="new-exercise__input-container" method="post" action="/api/exercise">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
             <label class="exercise__input-label">
                 Harjoitteen nimi
                 <input name="title" required maxlength="100"/>

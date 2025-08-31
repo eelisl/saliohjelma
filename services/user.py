@@ -2,6 +2,7 @@ import database.db as db
 import sqlite3
 from flask import session, redirect, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
 
 def hash_password(password):
     return generate_password_hash(password)
@@ -30,6 +31,7 @@ def get_user(username, password):
     if check_password_hash(password_hash, password):
         session["user_id"] = user_id
         session["username"] = username
+        session["csrf_token"] = secrets.token_hex(16)
         return redirect("/")
     else:
         flash("VIRHE: tapahtui virhe. Tarkista käyttäjätunnus ja salasana.", "error")
