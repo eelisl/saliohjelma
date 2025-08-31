@@ -128,3 +128,31 @@ a {
         min-width: initial;
     }
 }
+
+/* QUICK ACTIONS */
+
+.fp__quick-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.quick-actions__selection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    border-radius: 50px;
+    height: 100px;
+    width: 100px;
+    font-weight: 600;
+    font-size: 20px;
+    text-decoration: none;
+    border: 1px solid black;
+    color: black;
+    transition: all 0.3s;
+}
+
+.quick-actions__selection:hover {
+    transform: scale(1.1);
+}

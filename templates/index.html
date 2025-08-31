@@ -4,6 +4,29 @@
 
 {% block content %}
 
-<h2>Hello world</h2>
+<div class="content">
+    <h1>Hei {{session.username}}!</h1>
+
+    <div class="fp__quick-actions">
+        <a class="quick-actions__selection" href="/uusi">
+            Lisää harjoite
+        </a>
+        <a class="quick-actions__selection" href="/harjoitteet">
+            Harjoittele        
+        </a>
+    </div>
+    <div>
+    <div class="fp__exercises">
+        <h2>Harjoitteet</h2>
+        {% for e in exercises %}
+            {% if e %}
+                <p>{{ e.id }}</p>
+            {% endif %}
+        {% endfor %}
+        {% if not exercises|length %}
+            <p>Ei harjoitteita. Lisää uusia nähdäksesi ne tässä.</p>
+        {% endif %}
+    </div>
+</div>
 
 {% endblock %}
