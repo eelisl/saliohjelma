@@ -19,7 +19,7 @@ CREATE TABLE stats (
     weight INTEGER,
     set_amount INTEGER,
     rep_amount INTEGER,
-    completed_at INTEGER,
+    completed_at TEXT,
     user_id INTEGER REFERENCES users,
-    exercise_id INTEGER REFERENCES exercise
+    exercise_id INTEGER REFERENCES exercises
 );
