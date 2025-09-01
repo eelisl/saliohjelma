@@ -79,9 +79,10 @@ def profile_page():
     # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
     try:
         exercises = exerciseService.get_user_exercises(session["user_id"], query)
+        stats = exerciseService.get_profile_stats(session["user_id"])
     except:
         exercises = []
-    return render_template("profile.html", exercises=exercises)
+    return render_template("profile.html", exercises=exercises, stats=stats)
 
 @app.route("/harjoittele", methods=["GET"])
 @require_login
