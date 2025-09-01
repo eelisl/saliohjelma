@@ -5,17 +5,14 @@
 {% block content %}
 
 <div class="content">
-    <h1>Hei {{session.username}}!</h1>
-
-    <div class="fp__quick-actions">
-        <a class="quick-actions__selection" href="/uusi">
-            Lisää harjoite
-        </a>
-        <a class="quick-actions__selection" href="/harjoittele">
-            Harjoittele        
-        </a>
+    <h1>Profiili: {{session.username}}</h1>
+    <div class="profile__stats">
+        <h2>Tilastot</h2>
+        <div class="profile__stats-container">
+            <p>Olet harjoitellut tällä viikolla {{stats.count_training_days_week}}.</p>
+            <p>Olet suorittanut {{stats.count_exercises_today}} harjoitetta tänään.</p>
+        </div>
     </div>
-    <div>
     <div class="fp__exercises">
         <div class="fp__exercises--title-container">
             <h2>Harjoitteet</h2>

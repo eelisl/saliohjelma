@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block title %}Etusivu{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <h1>Harjoittele</h1>
+    <div class="fp__exercises">
+        <div class="fp__exercises--title-container">
+            <form class="search-form">
+                <input name="query" value='{{ query if query else ""}}'/>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+                <button>Etsi</button>
+            </form> 
+        </div>
+        <div class="fp__exercises-container--undone">
+            <h2>Tekemättä</h2>
+            {% if not exercises | length%}
+                <p>Olet suorittanut kaikki harjoitteet tälle päivälle, upeaa!</p>
+            {% endif %}
+            {% for e in exercises%}
+                {% if not e.completed_at %}
+                <div class="exercises__item--undone"> 
+                    <div class="exercises__item--text-container">
+                        <h3 class="exercises__item--title">{{ e.title }}</h3>
+                    </div>
+                    <div class="button-group">
+                        <form class="column" method="POST" action="/api/exercise/{{e.id}}/done">
+                            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+                            <input type="hidden" name="exercise_id" value="{{ e.id }}"/>
+                            <div class="exercise__input-group column">
+                                <label class="exercise__select">
+                                    Setit
+                                    <input value="{{e.goal_set_amount}}" type="number" min="1" max="5" name="set_amount" required/>
+                                </label>
+                                <label class="exercise__select">
+                                    Toistot
+                                    <input value="{{e.goal_rep_amount}}" type="number" min="1" max="100" name="rep_amount" required/>
+                                </label>
+                                <label class="exercise__select">
+                                    Painot (kg)
+                                    <input value="{{e.goal_weight}}" type="number" min="1" max="300" name="weight" required/>
+                                </label>
+                            </div>
+                            <button>Tehty</button>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            <h2>Tehty</h2>
+            <div class="fp__exercises-container">
+            {% for ed in exercises%}
+                {% if ed.completed_at %}
+                <div class="exercises__item"> 
+                    <div class="exercises__item--text-container">
+                        <h3 class="exercises__item--title">{{ ed.title }}</h3>
+                        <p class="exercises__item--info">{{ ed.goal_set_amount }} x {{ ed.goal_rep_amount }} x {{ ed.goal_weight}}kg</p>
+                    </div>
+                    <div class="exercises__item--text-container">
+                        <h4>Toteuma</h4>
+                        <p>Setit: {{ed.set_amount}}</p>
+                        <p>Toistot: {{ed.rep_amount}}</p>
+                        <p>Paino: {{ed.weight}}</p>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+        {% if not exercises|length %}
+            <p>Ei harjoitteita. Lisää uusia nähdäksesi ne tässä.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

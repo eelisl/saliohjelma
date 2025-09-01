@@ -13,22 +13,18 @@
     {% if not hide_navigation %}
     <div class="navigation">
         <div class="navigation__logo">
-            <p>Logo</p>
+            <a href="/">Etusivulle</a>
         </div>
         {% if session.username %}
             <p>Kirjautunut: {{session.username}}</p>
         {% endif %}
         <div class="navigation__items">
-            <a class="navigation__item">
-                Ohjelma
+            <a href="/harjoittele" class="navigation__item">
+                Harjoittele
             </a>
-            <a class="navigation__item">
-                Harjoitteet
-            </a>
-            <a class="navigation__item">
+            <a href="/profiili" class="navigation__item">
                 Profiili
             </a>
-
             <a href="/logout">
                 Kirjaudu ulos
             </a>
