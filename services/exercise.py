@@ -9,7 +9,7 @@ def get_user_exercises(user_id, query):
              """
     if query:
         sql += " AND e.title LIKE ?"
-    exercises = db.query(sql, [user_id] if not query else [user_id, query])
+    exercises = db.query(sql, [user_id] if not query else [user_id, f"%{query}%"])
     return exercises
 
 def get_exercise(exercise_id, user_id):
@@ -42,18 +42,36 @@ def delete_exercise(exercise_id, user_id):
     db.execute(sql, [exercise_id, user_id])
     return True
 
-def get_user_exercises_with_stats(user_id):
-    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, 
-             FROM exercises e
-             LEFT JOIN stats s 
+def get_user_exercises_with_stats(user_id, query, page_size, page):
+    sql = """SELECT s.set_amount, s.rep_amount, s.completed_at, e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
+             FROM stats s
+             JOIN exercises e
                 ON s.exercise_id = e.id 
                 AND s.user_id = e.user_id
              WHERE e.user_id = ?
              """
-    exercises = db.query(sql, [user_id])
+    if query:
+        sql += " AND e.title LIKE ? "
+    sql += "LIMIT ? OFFSET ?"
+    limit = page_size
+    offset = page_size * (page - 1)
+    exercises = db.query(sql, [user_id, f"%{query}%", limit, offset] if query else [user_id, limit, offset])
     return exercises
 
-def get_user_exercises_with_today_stats(user_id):
+def count_user_exercises_with_stats(user_id, query):
+    sql = """SELECT COUNT(*) AS total
+             FROM stats s
+             JOIN exercises e
+               ON s.exercise_id = e.id 
+              AND s.user_id = e.user_id
+             WHERE e.user_id = ?"""
+    if query:
+        sql += " AND e.title LIKE ? "
+    count = db.query(sql, [user_id, f"%{query}%"] if query else [user_id])
+    return count[0][0]
+
+
+def get_user_exercises_with_today_stats(user_id, query):
     sql = """SELECT 
                 e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount,
                 s.weight, s.set_amount, s.rep_amount, s.completed_at,
@@ -70,7 +88,9 @@ def get_user_exercises_with_today_stats(user_id):
                 AND DATE(s.completed_at) = DATE('now', 'localtime')
              WHERE e.user_id = ?
              """
-    exercises = db.query(sql, [user_id])
+    if query:
+        sql += " AND e.title LIKE ?"
+    exercises = db.query(sql, [user_id] if not query else [user_id, f"%{query}%"])
     return exercises
 
 def add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight):
@@ -97,4 +117,5 @@ def get_profile_stats(user_id):
                 ) as count_exercises_today
              """
     stats = db.query(sql, [user_id, user_id])
+    print(stats)
     return stats[0] if stats else None

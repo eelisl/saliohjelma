@@ -46,3 +46,11 @@ Jos haluat hot reloadin ja nähdä kattavampia debug lokeja, aja
 Jos aiot ajaa sovelluksen tuotantoympäristössä, sinun täytyy luoda `SECRET_KEY` tiedostoon `config.py`. Apuna voit käyttää `./scripts/create_key.py` skriptiä. Kopioi tulostettu arvo configiin.
 
 Oikeassa elämässä suosittaisin käyttämään `.env` muuttujia (minkä jo kerran implementoin, ennen kuin tajusin, että ulkoisia kirjastoja ei saa käyttää), mikä on alan standardi tapa säilyttää sovelluksen salaisuuksia.
+
+## Sovelluksen toiminta suurilla tietomäärillä
+
+Sovellusta on testattu suurella tietomäärällä. Voit kokeilla itse ajamalla `python ./database/seed.py` initialisoinnin jälkeen.
+
+Kun tietokannassa on dataa, voit kirjautua käyttäjällä `user1`, salasana `user1_password`.
+
+Profiilin data on sivutettu ja stats data indeksoitu. Data latautuu nopeasti, konsoli näyttää, että yhden haun kesto on 0.0s.

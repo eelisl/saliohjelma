@@ -16,9 +16,6 @@
         </div>
         <div class="fp__exercises-container--undone">
             <h2>Tekemättä</h2>
-            {% if not exercises | length%}
-                <p>Olet suorittanut kaikki harjoitteet tälle päivälle, upeaa!</p>
-            {% endif %}
             {% for e in exercises%}
                 {% if not e.completed_at %}
                 <div class="exercises__item--undone"> 
@@ -71,9 +68,6 @@
             {% endfor %}
             </div>
         </div>
-        {% if not exercises|length %}
-            <p>Ei harjoitteita. Lisää uusia nähdäksesi ne tässä.</p>
-        {% endif %}
     </div>
 </div>
 

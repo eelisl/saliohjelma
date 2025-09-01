@@ -15,7 +15,7 @@
     </div>
     <div class="fp__exercises">
         <div class="fp__exercises--title-container">
-            <h2>Harjoitteet</h2>
+            <h2>Suoritetut harjoitteet</h2>
             <form class="search-form">
                 <input name="query" value='{{ query if query else ""}}'/>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
@@ -27,23 +27,25 @@
                 <div class="exercises__item exercises__item--profile"> 
                     <div class="exercises__item--text-container">
                         <h3 class="exercises__item--title">{{ e.title }}</h3>
-                        <p class="exercises__item--info">{{ e.goal_set_amount }} x {{ e.goal_rep_amount }} x {{ e.goal_weight}}kg</p>
-                        <p class="exercises__item--description">{{e.description | show_lines  }}</p>
-                    </div>
-                    <div class="button-group">
-                        <a href="/harjoitteet/{{e.id}}/muokkaa?referrer=/profiili">Muokkaa</a>
-                        <form method="POST" action="/api/exercise/delete">
-                            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-                            <input type="hidden" name="exercise_id" value="{{ e.id }}"/>
-                            <button>Poista</button>
-                        </form>
+                        <p class="exercises__item--info">{{ e.set_amount }} x {{ e.rep_amount }} x {{ e.weight}}kg</p>
+                        <p class="exercises__item--description">{{e.completed_at}}</p>
                     </div>
                 </div>
             {% endfor %}
+
         </div>
         {% if not exercises|length %}
             <p>Ei harjoitteita. Lisää uusia nähdäksesi ne tässä.</p>
         {% endif %}
+                <p>
+                    {% if page > 1 %}
+                    <a href="/profiili?page={{ page - 1 }}">&lt;&lt;</a>
+                    {% endif %}
+                    Sivu {{ page }}/{{ page_count }}
+                    {% if page < page_count %}
+                    <a href="/profiili?page={{ page + 1 }}">&gt;&gt;</a>
+                    {% endif %}
+                </p>
     </div>
 </div>
 

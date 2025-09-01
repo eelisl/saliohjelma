@@ -5,9 +5,22 @@ import services.user as userService
 import services.exercise as exerciseService
 import services.category as categoryService
 import markupsafe
+from math import ceil
+import time
+from flask import g
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
+
+@app.before_request
+def before_request():
+    g.start_time = time.time()
+
+@app.after_request
+def after_request(response):
+    elapsed_time = round(time.time() - g.start_time, 2)
+    print("elapsed time:", elapsed_time, "s")
+    return response
 
 def require_login(f):
     @wraps(f)
@@ -87,23 +100,27 @@ def edit_exercise_page(exercise_id):
 @app.route("/profiili", methods=["GET"])
 @require_login
 def profile_page():
+    page_size = 10
     query = request.args.get("query")
-    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
-    try:
-        exercises = exerciseService.get_user_exercises(session["user_id"], query)
-        stats = exerciseService.get_profile_stats(session["user_id"])
-    except:
-        exercises = []
-    return render_template("profile.html", exercises=exercises, stats=stats)
+    page = int(request.args.get("page")) if request.args.get("page") else 1
+    
+    exercises = exerciseService.get_user_exercises_with_stats(session["user_id"], query, page_size, page)
+    stats = exerciseService.get_profile_stats(session["user_id"])
+
+    total = exerciseService.count_user_exercises_with_stats(session["user_id"], query)
+    page_count = max(1, ceil(total / page_size))
+
+    return render_template("profile.html", exercises=exercises, stats=stats, page=page, page_count=page_count)
 
 @app.route("/harjoittele", methods=["GET"])
 @require_login
 def exercise_page():
+    query = request.args.get("query")
     try:
-        exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"])
+        exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"], query)
     except:
         exercises = []
-    return render_template("exercise.html", exercises=exercises)
+    return render_template("exercise.html", exercises=exercises, query=query)
 ##
 # API
 ##
