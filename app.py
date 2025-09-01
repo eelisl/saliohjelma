@@ -3,6 +3,7 @@ from flask import Flask, render_template, session, redirect, request, flash, abo
 import config
 import services.user as userService
 import services.exercise as exerciseService
+import services.category as categoryService
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
@@ -55,18 +56,19 @@ def front_page():
 @app.route("/uusi", methods=["GET"])
 @require_login
 def new_exercise_page():
-    return render_template("new_exercise.html")
+    categories = categoryService.get_categories()
+    return render_template("new_exercise.html", categories=categories)
 
 @app.route("/harjoitteet/<int:exercise_id>/muokkaa", methods=["GET"])
 @require_login
 def edit_exercise_page(exercise_id):
     # Reason: if user has stale session and is not able to fetch, we need to have graceful error handling
     try:
-        print(exercise_id, session["user_id"])
         exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
+        categories = categoryService.get_categories()
         if not exercise:
             abort(404)
-        return render_template("edit_exercise.html", exercise=exercise)
+        return render_template("edit_exercise.html", exercise=exercise, categories=categories)
     except Exception as e:
         print(f"Error in edit_exercise_page: {e}")
         flash("VIRHE: muokattavaa harjoitetta ei löytynyt.", "error")
@@ -132,6 +134,7 @@ def new_exercise():
     rep_amount = request.form["rep_amount"]
     weight = request.form["weight"]
     description = request.form["description"]
+    category_id = request.form["category_id"]
 
     if not title or not 1 < len(title) < 150:
         flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
@@ -151,7 +154,7 @@ def new_exercise():
 
     # Reason: if session is stale, we want to gracefully throw error
     try:
-        exerciseService.create_exercise(user_id, title, set_amount, rep_amount, weight, description)
+        exerciseService.create_exercise(user_id, title, set_amount, rep_amount, weight, description, category_id)
         flash("Lisäys onnistui!", "success")
         return redirect("/uusi")
     except:
@@ -185,7 +188,7 @@ def edit_exercise(exercise_id):
     rep_amount = request.form["rep_amount"]
     weight = request.form["weight"]
     description = request.form["description"]
-
+    category_id = request.form["category_id"]
 
     if not title or not 1 < len(title) < 150:
         flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
@@ -206,7 +209,7 @@ def edit_exercise(exercise_id):
 
     # Reason: if session is stale, we want to gracefully throw error
     try:
-        exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description)
+        exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id)
         flash("Muokkaus onnistui!", "success")
         return redirect(f"/")
     except Exception as e:

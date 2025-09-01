@@ -21,6 +21,7 @@ for arg in "$@"; do
                 mkdir -p ./database
             fi
             sqlite3 database.db < ./database/schema.sql
+            sqlite3 database.db < ./database/init.sql
             echo "Database initialised."
             ;;
     esac
