@@ -2,7 +2,7 @@ import database.db as db
 import datetime
 
 def get_user_exercises(user_id, query):
-    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
+    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
              FROM exercises e
              JOIN categories c ON c.id = e.category_id
              WHERE e.user_id = ?
@@ -43,7 +43,7 @@ def delete_exercise(exercise_id, user_id):
     return True
 
 def get_user_exercises_with_stats(user_id):
-    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, 
+    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, 
              FROM exercises e
              LEFT JOIN stats s 
                 ON s.exercise_id = e.id 

@@ -4,6 +4,7 @@ import config
 import services.user as userService
 import services.exercise as exerciseService
 import services.category as categoryService
+import markupsafe
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
@@ -23,6 +24,14 @@ def require_csrf(f):
             abort(403)
         return f(*args, **kwargs)
     return check_csrf
+
+@app.template_filter()
+def show_lines(content):
+    print(content)
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    print(content)
+    return markupsafe.Markup(content)
 
 ##
 # PAGES
@@ -63,12 +72,13 @@ def new_exercise_page():
 @require_login
 def edit_exercise_page(exercise_id):
     # Reason: if user has stale session and is not able to fetch, we need to have graceful error handling
+    referrer = request.args.get("referrer")
     try:
         exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
         categories = categoryService.get_categories()
         if not exercise:
             abort(404)
-        return render_template("edit_exercise.html", exercise=exercise, categories=categories)
+        return render_template("edit_exercise.html", exercise=exercise, categories=categories, referrer=referrer)
     except Exception as e:
         print(f"Error in edit_exercise_page: {e}")
         flash("VIRHE: muokattavaa harjoitetta ei löytynyt.", "error")
@@ -189,33 +199,34 @@ def edit_exercise(exercise_id):
     weight = request.form["weight"]
     description = request.form["description"]
     category_id = request.form["category_id"]
+    referrer = request.form["referrer"]
 
     if not title or not 1 < len(title) < 150:
         flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
-        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        redirect()
     
     if not set_amount or not 1 < int(set_amount) < 5:
         flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
-        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        redirect(referrer)
 
     if not rep_amount or not 1 < int(rep_amount) < 50:
         flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
-        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        redirect(referrer)
     
     if not int(weight) < 200:
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
-        redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        redirect(referrer)
 
 
     # Reason: if session is stale, we want to gracefully throw error
     try:
         exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id)
         flash("Muokkaus onnistui!", "success")
-        return redirect(f"/")
+        return redirect(referrer)
     except Exception as e:
         print(f"Error in edit_exercise api: {e}")
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
-        return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+        return redirect(referrer)
 
 @app.route("/api/exercise/<int:exercise_id>/done", methods=["POST"])
 @require_login

@@ -247,6 +247,20 @@ a {
     transition: all 0.3s;
 }
 
+.exercises__item--profile {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    width: 50%;
+    height: max-content;
+    text-decoration: none;
+    border: 1px solid black;
+    color: black;
+    transition: all 0.3s;
+}
+
 .exercises__item > p {
     margin: 0;
 }
@@ -262,10 +276,6 @@ a {
     font-size: 14px;
     margin: 0 0 0.5rem;
 }
-.exercises__item--text-container p {
-    font-size: 12px;
-    margin: 0;
-}
 
 .exercises__item--title {
     font-weight: 800;
@@ -276,6 +286,11 @@ a {
     font-size: 12px;
     color: rgb(143, 143, 143);
     margin: 0;
+}
+
+.exercises__item--description {
+    font-size: 14px;
+    margin-top: 1rem;
 }
 
 .exercises__item > .button-group {

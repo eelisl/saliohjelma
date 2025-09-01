@@ -42,6 +42,7 @@
                 Ohjeet (valinnainen)
                 <textarea name="description" maxlength="300">{{ exercise.description }}</textarea>
             </label>
+            <input type="hidden" name="referrer" value="{{referrer if referrer else "/"}}"/>
             <button>Muokkaa</button>
             <a href="/">Palaa etusivulle</a>
         </form>

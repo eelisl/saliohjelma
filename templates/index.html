@@ -34,7 +34,7 @@
                         <p class="exercises__item--info">{{ e.category_label }}</p>
                     </div>
                     <div class="button-group">
-                        <a href="/harjoitteet/{{e.id}}/muokkaa">Muokkaa</a>
+                        <a href="/harjoitteet/{{e.id}}/muokkaa?referrer=/profiili">Muokkaa</a>
                         <form method="POST" action="/api/exercise/delete">
                             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                             <input type="hidden" name="exercise_id" value="{{ e.id }}"/>
