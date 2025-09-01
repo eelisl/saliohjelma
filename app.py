@@ -72,6 +72,25 @@ def edit_exercise_page(exercise_id):
         flash("VIRHE: muokattavaa harjoitetta ei löytynyt.", "error")
         return redirect("/")
 
+@app.route("/profiili", methods=["GET"])
+@require_login
+def profile_page():
+    query = request.args.get("query")
+    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
+    try:
+        exercises = exerciseService.get_user_exercises(session["user_id"], query)
+    except:
+        exercises = []
+    return render_template("profile.html", exercises=exercises)
+
+@app.route("/harjoittele", methods=["GET"])
+@require_login
+def exercise_page():
+    try:
+        exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"])
+    except:
+        exercises = []
+    return render_template("exercise.html", exercises=exercises)
 ##
 # API
 ##
@@ -193,6 +212,37 @@ def edit_exercise(exercise_id):
         print(f"Error in edit_exercise api: {e}")
         flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
         return redirect(f"/harjoitteet/{exercise_id}/muokkaa")
+
+@app.route("/api/exercise/<int:exercise_id>/done", methods=["POST"])
+@require_login
+@require_csrf
+def new_exercise_stats(exercise_id):
+    user_id = session["user_id"]
+    set_amount = request.form["set_amount"]
+    rep_amount = request.form["rep_amount"]
+    weight = request.form["weight"]
+    
+    if not set_amount or not 1 < int(set_amount) < 5:
+        flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
+        redirect("/harjoittele")
+
+    if not rep_amount or not 1 < int(rep_amount) < 50:
+        flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
+        redirect("/harjoittele")
+    
+    if not int(weight) < 200:
+        flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
+        redirect("/harjoittele")
+
+    # Reason: if session is stale, we want to gracefully throw error
+    try:
+        exerciseService.add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight)
+        flash("Lisäys onnistui!", "success")
+        return redirect("/harjoittele")
+    except Exception as e:
+        print("Error with adding stats: ", e)
+        flash("VIRHE: Joku meni vikaan tehdyksi merkkaamisessa. Kokeile uudestaan.", "error")
+        return redirect("/harjoittele")
 
 if __name__ == "__main__":
     app.run(debug=True)
