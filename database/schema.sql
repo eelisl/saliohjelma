@@ -4,6 +4,11 @@ CREATE TABLE users (
     password_hash TEXT
 );
 
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY,
+    label TEXT
+);
+
 CREATE TABLE exercises (
     id INTEGER PRIMARY KEY,
     title TEXT,
@@ -11,7 +16,8 @@ CREATE TABLE exercises (
     goal_weight INTEGER,
     goal_set_amount INTEGER,
     goal_rep_amount INTEGER,
-    user_id INTEGER REFERENCES users
+    user_id INTEGER REFERENCES users,
+    category_id INTEGER REFERENCES categories
 );
 
 CREATE TABLE stats (
