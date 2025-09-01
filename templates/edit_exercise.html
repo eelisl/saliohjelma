@@ -29,6 +29,14 @@
                     Painot (kg)
                     <input value="{{exercise.goal_weight}}" type="number" min="1" max="300" name="weight" required/>
                 </label>
+                <label class="exercise__input-label">
+                    Millainen harjoite?
+                    <select>
+                        {% for category in categories%}
+                            <option value="{{category.id}}" {{"selected" if category.id == exercise.category_id else ""}}>{{category.label}}</option>
+                        {% endfor %}
+                    </select>
+                </label>
             </div>
             <label class="exercise__input-label">
                 Ohjeet (valinnainen)

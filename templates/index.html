@@ -31,6 +31,7 @@
                     <div class="exercises__item--text-container">
                         <h3 class="exercises__item--title">{{ e.title }}</h3>
                         <p class="exercises__item--info">{{ e.goal_set_amount }} x {{ e.goal_rep_amount }} x {{ e.goal_weight}}kg</p>
+                        <p class="exercises__item--info">{{ e.category_label }}</p>
                     </div>
                     <div class="button-group">
                         <a href="/harjoitteet/{{e.id}}/muokkaa">Muokkaa</a>
