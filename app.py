@@ -259,5 +259,10 @@ def new_exercise_stats(exercise_id):
         flash("VIRHE: Joku meni vikaan tehdyksi merkkaamisessa. Kokeile uudestaan.", "error")
         return redirect("/harjoittele")
 
+# Assets
+@app.route("/assets/logo")
+def serve_logo():
+    return app.send_static_file("logo.png")
+
 if __name__ == "__main__":
     app.run(debug=True)

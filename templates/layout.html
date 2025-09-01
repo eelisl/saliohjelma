@@ -13,7 +13,9 @@
     {% if not hide_navigation %}
     <div class="navigation">
         <div class="navigation__logo">
-            <a href="/">Etusivulle</a>
+            <a href="/">
+                <img class="logo" src="/assets/logo" alt="Logo sivustolle. Vihreällä taustalla lukee iQ."/>
+            </a>
         </div>
         {% if session.username %}
             <p>Kirjautunut: {{session.username}}</p>

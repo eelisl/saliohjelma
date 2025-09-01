@@ -25,8 +25,8 @@
 [X] Sovelluksen perustoiminnot toimivat
 [X] CSS:n avulla toteutettu ulkoasu (itse tehty, ei CSS-kirjastoa)
 [X] Sovellusta on helppoa ja loogista käyttää
-[ ] Käyttäjän lähettämässä tekstissä rivinvaihdot näkyvät selaimessa
-[ ] Kuvissa käytetty alt-attribuuttia (jos sovelluksessa kuvia)
+[X] Käyttäjän lähettämässä tekstissä rivinvaihdot näkyvät selaimessa
+[X] Kuvissa käytetty alt-attribuuttia (jos sovelluksessa kuvia)
 [X] Lomakkeissa käytetty label-elementtiä
 
 ## Versionhallinta
