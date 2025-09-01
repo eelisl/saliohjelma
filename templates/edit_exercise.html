@@ -31,7 +31,7 @@
                 </label>
                 <label class="exercise__input-label">
                     Millainen harjoite?
-                    <select>
+                    <select name="category_id">
                         {% for category in categories%}
                             <option value="{{category.id}}" {{"selected" if category.id == exercise.category_id else ""}}>{{category.label}}</option>
                         {% endfor %}

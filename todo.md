@@ -4,13 +4,13 @@
 [X] Käyttäjä pystyy lisäämään, muokkaamaan ja poistamaan tietokohteita
 [X] Käyttäjä näkee sovellukseen lisätyt tietokohteet
 [X] Käyttäjä pystyy etsimään tietokohteita hakusanalla tai muulla perusteella
-[ ] Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet
-[ ] Käyttäjä pystyy valitsemaan tietokohteelle yhden tai useamman luokittelun
-[ ] Käyttäjä pystyy lisäämään tietokohteeseen toissijaisia tietokohteita
+[x] Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet
+[X] Käyttäjä pystyy valitsemaan tietokohteelle yhden tai useamman luokittelun
+[X] Käyttäjä pystyy lisäämään tietokohteeseen toissijaisia tietokohteita
 
 ## Perusvaatimukset
 
-[ ] Sovellus toteutettu kurssimateriaalin mukaisesti
+[X] Sovellus toteutettu kurssimateriaalin mukaisesti
 [X] Sovellus toteutettu Pythonilla käyttäen Flask-kirjastoa
 [X] Sovellus käyttää SQLite-tietokantaa
 [X] Kehitystyössä käytetty Gitiä ja GitHubia
