@@ -54,3 +54,9 @@ Sovellusta on testattu suurella tietomäärällä. Voit kokeilla itse ajamalla `
 Kun tietokannassa on dataa, voit kirjautua käyttäjällä `user1`, salasana `user1_password`.
 
 Profiilin data on sivutettu ja stats data indeksoitu. Data latautuu nopeasti, konsoli näyttää, että yhden haun kesto on 0.0s.
+
+Samoin /harjoitteet -sivun kaikki harjoitteet on sivutettu. Data latautuu nopeasti, konsoli näyttää, että yhden haun kesto on 0.0s.
+
+## Linttaus
+
+Katso ["PYLINT_REPORT.md](PYLINT_REPORT.md)

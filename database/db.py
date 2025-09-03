@@ -22,7 +22,7 @@ def execute(sql, params=[]):
 
 def last_insert_id():
     """Return last insert id, that is stored in global"""
-    return g.last_insert_id    
+    return g.last_insert_id
 
 def query(sql, params=[]):
     """DB query function"""

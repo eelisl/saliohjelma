@@ -42,7 +42,7 @@ def get_user_exercises(user_id, query):
 
 def get_exercise(exercise_id, user_id):
     """Get a specific exercise for a specific user"""
-    sql = """SELECT 
+    sql = """SELECT
                 e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.description, e.category_id, c.label as category_label
              FROM exercises e
              JOIN categories c ON c.id = e.category_id
@@ -52,8 +52,9 @@ def get_exercise(exercise_id, user_id):
     exercises = db.query(sql, [user_id, exercise_id])
     return exercises[0]
 
-def create_exercise(user_id, title, set_amount, rep_amount, weight, description, category_id):
+def create_exercise(values):
     """Create a new exercise"""
+    [user_id, title, set_amount, rep_amount, weight, description, category_id] = values
     sql = """INSERT INTO
                 exercises (title, description, goal_weight, goal_set_amount, goal_rep_amount, user_id, category_id) 
              VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -61,8 +62,9 @@ def create_exercise(user_id, title, set_amount, rep_amount, weight, description,
     db.execute(sql, [title, description, weight, set_amount, rep_amount, user_id, category_id])
     return db.last_insert_id()
 
-def edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id):
+def edit_exercise(values):
     """Edit existing exercise of an specific user"""
+    [exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id] = values
     sql = """UPDATE exercises
              SET title = ?, description = ?, goal_weight = ?, goal_set_amount = ?, goal_rep_amount = ?, category_id = ?
              WHERE id = ? AND user_id = ?
@@ -116,7 +118,7 @@ def count_user_exercises_with_stats(user_id, query):
 
 def get_user_exercises_with_today_stats(user_id, query):
     """Get exercises with completion stats from a specific user for today"""
-    sql = """SELECT 
+    sql = """SELECT
                 e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount,
                 s.weight, s.set_amount, s.rep_amount, s.completed_at,
                 (

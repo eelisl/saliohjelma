@@ -229,7 +229,7 @@ def new_exercise():
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
         redirect("/uusi")
 
-    exerciseService.create_exercise(
+    exerciseService.create_exercise([
         user_id,
         title,
         set_amount,
@@ -237,7 +237,7 @@ def new_exercise():
         weight,
         description,
         category_id
-    )
+    ])
 
     flash("Lisäys onnistui!", "success")
     return redirect("/uusi")
@@ -293,7 +293,7 @@ def edit_exercise(exercise_id):
         redirect(referrer)
 
 
-    exerciseService.edit_exercise(
+    exerciseService.edit_exercise([
         exercise_id,
         user_id,
         title,
@@ -302,7 +302,7 @@ def edit_exercise(exercise_id):
         weight,
         description,
         category_id
-    )
+    ])
 
     flash("Muokkaus onnistui!", "success")
     return redirect(referrer)
