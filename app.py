@@ -1,28 +1,32 @@
+"""Main application"""
 from functools import wraps
+from math import ceil
+import time
 from flask import Flask, render_template, session, redirect, request, flash, abort
+from flask import g
+import markupsafe
 import config
 import services.user as userService
 import services.exercise as exerciseService
 import services.category as categoryService
-import markupsafe
-from math import ceil
-import time
-from flask import g
 
 app = Flask(__name__)
 app.secret_key = config.SECRET_KEY
 
 @app.before_request
 def before_request():
+    """Save request start time to global"""
     g.start_time = time.time()
 
 @app.after_request
 def after_request(response):
+    """Print elapsed time from the saved start time"""
     elapsed_time = round(time.time() - g.start_time, 2)
     print("elapsed time:", elapsed_time, "s")
     return response
 
 def require_login(f):
+    """Decorator to check if user is logged in"""
     @wraps(f)
     def check_id(*args, **kwargs):
         if "user_id" not in session:
@@ -31,6 +35,7 @@ def require_login(f):
     return check_id
 
 def require_csrf(f):
+    """Decorator to check if form has csrf"""
     @wraps(f)
     def check_csrf(*args, **kwargs):
         if request.form["csrf_token"] != session["csrf_token"]:
@@ -40,6 +45,7 @@ def require_csrf(f):
 
 @app.template_filter()
 def show_lines(content):
+    """Template filter to keep the row change in the UI"""
     print(content)
     content = str(markupsafe.escape(content))
     content = content.replace("\n", "<br />")
@@ -52,91 +58,113 @@ def show_lines(content):
 
 @app.route("/login", methods=["GET"])
 def login_page():
+    """Login page"""
     return render_template("login.html", hide_navigation=True)
 
 @app.route("/register", methods=["GET"])
 def register_page():
+    """Register page"""
     return render_template("register.html", hide_navigation=True)
 
 @app.route("/logout", methods=["GET"])
 def logout():
+    """Logout page"""
+
     del session["user_id"]
     return redirect("/")
 
 @app.route("/", methods=["GET"])
 @require_login
 def front_page():
-    query = request.args.get("query")
-    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
-    try:
-        exercises = exerciseService.get_user_exercises(session["user_id"], query)
-    except:
-        exercises = []
+    """Front page"""
 
+    query = request.args.get("query")
+    exercises = exerciseService.get_user_exercises(session["user_id"], query)
     return render_template("index.html", exercises=exercises, query=query)
 
 @app.route("/uusi", methods=["GET"])
 @require_login
 def new_exercise_page():
+    """Exercise creation page"""
+
     categories = categoryService.get_categories()
     return render_template("new_exercise.html", categories=categories)
 
 @app.route("/harjoitteet/<int:exercise_id>/muokkaa", methods=["GET"])
 @require_login
 def edit_exercise_page(exercise_id):
-    # Reason: if user has stale session and is not able to fetch, we need to have graceful error handling
+    """Exercise editor page"""
+
     referrer = request.args.get("referrer")
-    try:
-        exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
-        categories = categoryService.get_categories()
-        if not exercise:
-            abort(404)
-        return render_template("edit_exercise.html", exercise=exercise, categories=categories, referrer=referrer)
-    except Exception as e:
-        print(f"Error in edit_exercise_page: {e}")
-        flash("VIRHE: muokattavaa harjoitetta ei löytynyt.", "error")
-        return redirect("/")
+    exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
+    categories = categoryService.get_categories()
+    if not exercise:
+        abort(404)
+    return render_template(
+        "edit_exercise.html", 
+        exercise=exercise,
+        categories=categories,
+        referrer=referrer
+    )
 
 @app.route("/profiili", methods=["GET"])
 @require_login
 def profile_page():
+    """Profile page"""
+
     page_size = 10
     query = request.args.get("query")
     page = int(request.args.get("page")) if request.args.get("page") else 1
-    
-    exercises = exerciseService.get_user_exercises_with_stats(session["user_id"], query, page_size, page)
+    exercises = exerciseService.get_user_exercises_with_stats(
+        session["user_id"],
+        query,
+        page_size,
+        page
+    )
     stats = exerciseService.get_profile_stats(session["user_id"])
 
     total = exerciseService.count_user_exercises_with_stats(session["user_id"], query)
     page_count = max(1, ceil(total / page_size))
 
-    return render_template("profile.html", exercises=exercises, stats=stats, page=page, page_count=page_count)
+    return render_template(
+        "profile.html",
+        exercises=exercises,
+        stats=stats,
+        page=page,
+        page_count=page_count
+    )
 
 @app.route("/harjoittele", methods=["GET"])
 @require_login
 def exercise_page():
+    """Exercise page"""
+
     query = request.args.get("query")
-    try:
-        exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"], query)
-    except:
-        exercises = []
+    exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"], query)
     return render_template("exercise.html", exercises=exercises, query=query)
 
 @app.route("/harjoitteet", methods=["GET"])
 @require_login
 def all_exercises_page():
+    """All exercises page"""
+
     page_size = 10
     query = request.args.get("query")
     page = int(request.args.get("page")) if request.args.get("page") else 1
-    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
-
     exercises = exerciseService.get_exercises(query, page_size, page)
 
     total = exerciseService.count_exercises(query)
     categories = categoryService.get_categories()
     page_count = max(1, ceil(total / page_size))
 
-    return render_template("all_exercises.html", exercises=exercises, query=query, page=page, page_count=page_count, categories=categories)
+    return render_template(
+        "all_exercises.html",
+        exercises=exercises,
+        query=query,
+        page=page,
+        page_count=page_count,
+        categories=categories
+    )
 ##
 # API
 ##
@@ -145,12 +173,16 @@ def all_exercises_page():
 
 @app.route("/api/login", methods=["POST"])
 def login():
+    """API route: login"""
+
     username = request.form["username"]
     password = request.form["password"]
     return userService.get_user(username, password)
 
 @app.route("/api/register", methods=["POST"])
 def register():
+    """API route: register"""
+
     username = request.form["username"]
     password = request.form["password1"]
     password_again = request.form["password2"]
@@ -158,11 +190,11 @@ def register():
     if password != password_again:
         flash("VIRHE: salasanat eivät ole samat", "error")
         return redirect("/register")
-    
+
     if not 3 < len(username) < 20:
         flash("VIRHE: käyttäjätunnuksen pitää olla 3-20 merkkiä pitkä", "error")
         return redirect("/register")
-    
+
     return userService.create_user(username, userService.generate_password_hash(password))
 
 # Exercise
@@ -171,6 +203,8 @@ def register():
 @require_login
 @require_csrf
 def new_exercise():
+    """API route: new exercise"""
+
     user_id = session["user_id"]
     title = request.form["title"]
     set_amount = request.form["set_amount"]
@@ -182,7 +216,7 @@ def new_exercise():
     if not title or not 1 < len(title) < 150:
         flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
         redirect("/uusi")
-    
+
     if not set_amount or not 1 < int(set_amount) < 5:
         flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
         redirect("/uusi")
@@ -190,24 +224,30 @@ def new_exercise():
     if not rep_amount or not 1 < int(rep_amount) < 50:
         flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
         redirect("/uusi")
-    
-    if not int(weight) < 200:
+
+    if int(weight) >= 200:
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
         redirect("/uusi")
 
-    # Reason: if session is stale, we want to gracefully throw error
-    try:
-        exerciseService.create_exercise(user_id, title, set_amount, rep_amount, weight, description, category_id)
-        flash("Lisäys onnistui!", "success")
-        return redirect("/uusi")
-    except:
-        flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
-        return redirect("/uusi")
+    exerciseService.create_exercise(
+        user_id,
+        title,
+        set_amount,
+        rep_amount,
+        weight,
+        description,
+        category_id
+    )
+
+    flash("Lisäys onnistui!", "success")
+    return redirect("/uusi")
 
 @app.route("/api/exercise/delete", methods=["POST"])
 @require_login
 @require_csrf
 def delete_exercise():
+    """API route: delete exercise"""
+
     exercise_id = request.form["exercise_id"]
     user_id = session["user_id"]
     referrer = request.referrer
@@ -221,10 +261,12 @@ def delete_exercise():
 @require_login
 @require_csrf
 def edit_exercise(exercise_id):
+    """API route: edit exercise"""
+
     if not exercise_id:
         flash("VIRHE: Joku meni vikaan muokkauksessa. Kokeile uudestaan.", "error")
         return redirect("/")
-    
+
     user_id = session["user_id"]
     title = request.form["title"]
     set_amount = request.form["set_amount"]
@@ -236,8 +278,8 @@ def edit_exercise(exercise_id):
 
     if not title or not 1 < len(title) < 150:
         flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
-        redirect()
-    
+        redirect(referrer)
+
     if not set_amount or not 1 < int(set_amount) < 5:
         flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
         redirect(referrer)
@@ -245,31 +287,37 @@ def edit_exercise(exercise_id):
     if not rep_amount or not 1 < int(rep_amount) < 50:
         flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
         redirect(referrer)
-    
-    if not int(weight) < 200:
+
+    if int(weight) >= 200:
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
         redirect(referrer)
 
 
-    # Reason: if session is stale, we want to gracefully throw error
-    try:
-        exerciseService.edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id)
-        flash("Muokkaus onnistui!", "success")
-        return redirect(referrer)
-    except Exception as e:
-        print(f"Error in edit_exercise api: {e}")
-        flash("VIRHE: Joku meni vikaan lisäyksessä. Kokeile uudestaan.", "error")
-        return redirect(referrer)
+    exerciseService.edit_exercise(
+        exercise_id,
+        user_id,
+        title,
+        set_amount,
+        rep_amount,
+        weight,
+        description,
+        category_id
+    )
+
+    flash("Muokkaus onnistui!", "success")
+    return redirect(referrer)
 
 @app.route("/api/exercise/<int:exercise_id>/done", methods=["POST"])
 @require_login
 @require_csrf
 def new_exercise_stats(exercise_id):
+    """API route: update exercise to be done"""
+
     user_id = session["user_id"]
     set_amount = request.form["set_amount"]
     rep_amount = request.form["rep_amount"]
     weight = request.form["weight"]
-    
+
     if not set_amount or not 1 < int(set_amount) < 5:
         flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
         redirect("/harjoittele")
@@ -277,32 +325,28 @@ def new_exercise_stats(exercise_id):
     if not rep_amount or not 1 < int(rep_amount) < 50:
         flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
         redirect("/harjoittele")
-    
-    if not int(weight) < 200:
+
+    if int(weight) >= 200:
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
         redirect("/harjoittele")
 
-    # Reason: if session is stale, we want to gracefully throw error
-    try:
-        exerciseService.add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight)
-        flash("Lisäys onnistui!", "success")
-        return redirect("/harjoittele")
-    except Exception as e:
-        print("Error with adding stats: ", e)
-        flash("VIRHE: Joku meni vikaan tehdyksi merkkaamisessa. Kokeile uudestaan.", "error")
-        return redirect("/harjoittele")
+    exerciseService.add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight)
+    flash("Lisäys onnistui!", "success")
+    return redirect("/harjoittele")
 
 @app.route("/api/exercise/<int:exercise_id>/category", methods=["POST"])
 @require_login
 @require_csrf
 def edit_exercise_category(exercise_id):
-    user_id = session["user_id"]
+    """API Route: update category of an exercise"""
+
     category_id = request.form["category_id"]
     page = request.form["page"]
 
     if not category_id:
         flash("Pitäisi olla joku kategoria", "error")
         redirect("/harjoitteet")
+
     exerciseService.edit_category(exercise_id, category_id)
     flash("Kategorian muutos onnistui!", "success")
     return redirect(f"/harjoitteet?page={page}")
@@ -310,6 +354,8 @@ def edit_exercise_category(exercise_id):
 # Assets
 @app.route("/assets/logo")
 def serve_logo():
+    """Serve logo asset"""
+
     return app.send_static_file("logo.png")
 
 if __name__ == "__main__":
