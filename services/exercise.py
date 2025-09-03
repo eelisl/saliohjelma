@@ -1,8 +1,11 @@
-import database.db as db
+"""Exercise service"""
 import datetime
+from database import db
 
 def get_exercises(query, page_size, page):
-    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
+    """Get all exercises"""
+    sql = """SELECT
+                e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
              FROM exercises e
              JOIN categories c ON c.id = e.category_id
              """
@@ -15,6 +18,7 @@ def get_exercises(query, page_size, page):
     return exercises
 
 def count_exercises(query):
+    """Count all exercises"""
     sql = """SELECT COUNT(*) AS total
              FROM exercises e
              """
@@ -24,7 +28,9 @@ def count_exercises(query):
     return count[0][0]
 
 def get_user_exercises(user_id, query):
-    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
+    """Get all exercises for a specific user"""
+    sql = """SELECT
+                e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
              FROM exercises e
              JOIN categories c ON c.id = e.category_id
              WHERE e.user_id = ?
@@ -35,7 +41,9 @@ def get_user_exercises(user_id, query):
     return exercises
 
 def get_exercise(exercise_id, user_id):
-    sql = """SELECT e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.description, e.category_id, c.label as category_label
+    """Get a specific exercise for a specific user"""
+    sql = """SELECT 
+                e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.description, e.category_id, c.label as category_label
              FROM exercises e
              JOIN categories c ON c.id = e.category_id
              WHERE e.user_id = ? AND e.id = ?
@@ -45,27 +53,36 @@ def get_exercise(exercise_id, user_id):
     return exercises[0]
 
 def create_exercise(user_id, title, set_amount, rep_amount, weight, description, category_id):
-    sql = """INSERT INTO exercises (title, description, goal_weight, goal_set_amount, goal_rep_amount, user_id, category_id) 
+    """Create a new exercise"""
+    sql = """INSERT INTO
+                exercises (title, description, goal_weight, goal_set_amount, goal_rep_amount, user_id, category_id) 
              VALUES (?, ?, ?, ?, ?, ?, ?)
              """
     db.execute(sql, [title, description, weight, set_amount, rep_amount, user_id, category_id])
     return db.last_insert_id()
 
 def edit_exercise(exercise_id, user_id, title, set_amount, rep_amount, weight, description, category_id):
-    sql = """UPDATE exercises 
+    """Edit existing exercise of an specific user"""
+    sql = """UPDATE exercises
              SET title = ?, description = ?, goal_weight = ?, goal_set_amount = ?, goal_rep_amount = ?, category_id = ?
              WHERE id = ? AND user_id = ?
              """
-    db.execute(sql, [title, description, weight, set_amount, rep_amount, category_id, exercise_id, user_id])
+    db.execute(
+        sql,
+        [title, description, weight, set_amount, rep_amount, category_id, exercise_id, user_id]
+    )
     return True
 
 def delete_exercise(exercise_id, user_id):
+    """Delete exercise of an specific user"""
     sql = "DELETE FROM exercises WHERE id = ? AND user_id = ?"
     db.execute(sql, [exercise_id, user_id])
     return True
 
 def get_user_exercises_with_stats(user_id, query, page_size, page):
-    sql = """SELECT s.set_amount, s.rep_amount, s.completed_at, e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
+    """Get exercises of an user with completion stats"""
+    sql = """SELECT
+                s.set_amount, s.rep_amount, s.completed_at, e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
              FROM stats s
              JOIN exercises e
                 ON s.exercise_id = e.id 
@@ -77,10 +94,14 @@ def get_user_exercises_with_stats(user_id, query, page_size, page):
     sql += "LIMIT ? OFFSET ?"
     limit = page_size
     offset = page_size * (page - 1)
-    exercises = db.query(sql, [user_id, f"%{query}%", limit, offset] if query else [user_id, limit, offset])
+    exercises = db.query(
+        sql,
+        [user_id, f"%{query}%", limit, offset] if query else [user_id, limit, offset]
+    )
     return exercises
 
 def count_user_exercises_with_stats(user_id, query):
+    """Count completion stats of exercises from a specific user"""
     sql = """SELECT COUNT(*) AS total
              FROM stats s
              JOIN exercises e
@@ -94,6 +115,7 @@ def count_user_exercises_with_stats(user_id, query):
 
 
 def get_user_exercises_with_today_stats(user_id, query):
+    """Get exercises with completion stats from a specific user for today"""
     sql = """SELECT 
                 e.id, e.title, e.goal_weight, e.goal_set_amount, e.goal_rep_amount,
                 s.weight, s.set_amount, s.rep_amount, s.completed_at,
@@ -116,6 +138,7 @@ def get_user_exercises_with_today_stats(user_id, query):
     return exercises
 
 def add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight):
+    """Add completion stats for an exercise"""
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     sql = """INSERT INTO stats (set_amount, rep_amount, weight, completed_at, user_id, exercise_id)
              VALUES (?, ?, ?, ?, ?, ?)
@@ -124,7 +147,9 @@ def add_exercise_stats(user_id, exercise_id, set_amount, rep_amount, weight):
     return db.last_insert_id()
 
 def get_profile_stats(user_id):
-    sql = """SELECT 
+    """Get two stats: how many days in a week has user completed an exercise 
+    and how many exercises user has completed today"""
+    sql = """SELECT
                 (
                     SELECT COUNT(DISTINCT DATE(s1.completed_at)) 
                     FROM stats s1
@@ -143,6 +168,7 @@ def get_profile_stats(user_id):
     return stats[0] if stats else None
 
 def edit_category(exercise_id, category_id):
+    """Update category for any exercise"""
     sql = """UPDATE exercises
              SET category_id = ?
              WHERE id = ?
