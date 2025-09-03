@@ -121,6 +121,22 @@ def exercise_page():
     except:
         exercises = []
     return render_template("exercise.html", exercises=exercises, query=query)
+
+@app.route("/harjoitteet", methods=["GET"])
+@require_login
+def all_exercises_page():
+    page_size = 10
+    query = request.args.get("query")
+    page = int(request.args.get("page")) if request.args.get("page") else 1
+    # Reason: if no exercises are added, there might be an error. We don't want the front page to stop working because of this.
+
+    exercises = exerciseService.get_exercises(query, page_size, page)
+
+    total = exerciseService.count_exercises(query)
+    categories = categoryService.get_categories()
+    page_count = max(1, ceil(total / page_size))
+
+    return render_template("all_exercises.html", exercises=exercises, query=query, page=page, page_count=page_count, categories=categories)
 ##
 # API
 ##
@@ -275,6 +291,21 @@ def new_exercise_stats(exercise_id):
         print("Error with adding stats: ", e)
         flash("VIRHE: Joku meni vikaan tehdyksi merkkaamisessa. Kokeile uudestaan.", "error")
         return redirect("/harjoittele")
+
+@app.route("/api/exercise/<int:exercise_id>/category", methods=["POST"])
+@require_login
+@require_csrf
+def edit_exercise_category(exercise_id):
+    user_id = session["user_id"]
+    category_id = request.form["category_id"]
+    page = request.form["page"]
+
+    if not category_id:
+        flash("Pitäisi olla joku kategoria", "error")
+        redirect("/harjoitteet")
+    exerciseService.edit_category(exercise_id, category_id)
+    flash("Kategorian muutos onnistui!", "success")
+    return redirect(f"/harjoitteet?page={page}")
 
 # Assets
 @app.route("/assets/logo")

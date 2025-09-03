@@ -1,6 +1,28 @@
 import database.db as db
 import datetime
 
+def get_exercises(query, page_size, page):
+    sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
+             FROM exercises e
+             JOIN categories c ON c.id = e.category_id
+             """
+    if query:
+        sql += "WHERE e.title LIKE ?"
+    sql += "LIMIT ? OFFSET ?"
+    limit = page_size
+    offset = page_size * (page - 1)
+    exercises = db.query(sql, [f"%{query}%", limit, offset] if query else [limit, offset])
+    return exercises
+
+def count_exercises(query):
+    sql = """SELECT COUNT(*) AS total
+             FROM exercises e
+             """
+    if query:
+        sql += "WHERE e.title LIKE ? "
+    count = db.query(sql, [f"%{query}%"] if query else [])
+    return count[0][0]
+
 def get_user_exercises(user_id, query):
     sql = """SELECT e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount, e.category_id, c.label as category_label
              FROM exercises e
@@ -119,3 +141,11 @@ def get_profile_stats(user_id):
     stats = db.query(sql, [user_id, user_id])
     print(stats)
     return stats[0] if stats else None
+
+def edit_category(exercise_id, category_id):
+    sql = """UPDATE exercises
+             SET category_id = ?
+             WHERE id = ?
+             """
+    db.execute(sql, [category_id, exercise_id])
+    return True

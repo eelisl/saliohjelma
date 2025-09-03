@@ -7,6 +7,8 @@
 [x] Käyttäjäsivu näyttää tilastoja ja käyttäjän lisäämät tietokohteet
 [X] Käyttäjä pystyy valitsemaan tietokohteelle yhden tai useamman luokittelun
 [X] Käyttäjä pystyy lisäämään tietokohteeseen toissijaisia tietokohteita
+[X] Käyttäjä pystyy katsomaan muiden käyttäjien tietokohteita
+[X] Käyttäjä pystyy lisäämään luokituksia muille
 
 ## Perusvaatimukset
 
@@ -69,6 +71,6 @@
 
 ## Testaus
 
-[ ] Sovellusta testattu suurella tietomäärällä ja raportoitu tulokset
-[ ] Sovelluksessa käytössä tietokohteiden sivutus
-[ ] Tietokantaan lisätty indeksi, joka nopeuttaa suuren tietomäärän käsittelyä
+[X] Sovellusta testattu suurella tietomäärällä ja raportoitu tulokset
+[X] Sovelluksessa käytössä tietokohteiden sivutus
+[X] Tietokantaan lisätty indeksi, joka nopeuttaa suuren tietomäärän käsittelyä
