@@ -69,7 +69,6 @@ def register_page():
 @app.route("/logout", methods=["GET"])
 def logout():
     """Logout page"""
-
     del session["user_id"]
     return redirect("/")
 
@@ -193,6 +192,10 @@ def register():
 
     if not 3 < len(username) < 20:
         flash("VIRHE: käyttäjätunnuksen pitää olla 3-20 merkkiä pitkä", "error")
+        return redirect("/register")
+
+    if not 8 <= len(password):
+        flash("VIRHE: salasanan pitää olla vähintään 8 merkkiä pitkä.", "error")
         return redirect("/register")
 
     return userService.create_user(username, userService.generate_password_hash(password))
