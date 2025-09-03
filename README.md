@@ -20,7 +20,7 @@ Elämää helpottaaksesi voit ajaa skriptin `run-app.sh --init`, joka asentaa ka
 pip install -r requirements.txt
 ```
 
-2. Luo ja alusta tietokanta (WIP)
+2. Luo ja alusta tietokanta
 
 ```bash
 sqlite3 database.db < schema.sql
@@ -31,6 +31,12 @@ sqlite3 database.db < init.sql
 
 ```bash
 flask run
+```
+
+4. Lisää dataa tietokantaan (valinnainen)
+
+```bash
+python ./database/seed.py
 ```
 
 ## Dev mode
