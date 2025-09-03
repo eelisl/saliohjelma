@@ -59,4 +59,4 @@ Samoin /harjoitteet -sivun kaikki harjoitteet on sivutettu. Data latautuu nopeas
 
 ## Linttaus
 
-Katso ["PYLINT_REPORT.md](PYLINT_REPORT.md)
+Katso [PYLINT_REPORT.md](PYLINT_REPORT.md)
