@@ -23,8 +23,8 @@ pip install -r requirements.txt
 2. Luo ja alusta tietokanta
 
 ```bash
-sqlite3 database.db < schema.sql
-sqlite3 database.db < init.sql
+sqlite3 database.db < ./database/schema.sql
+sqlite3 database.db < ./database/init.sql
 ```
 
 3. Käynnistä sovellus
