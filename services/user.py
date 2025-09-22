@@ -16,7 +16,7 @@ def create_user(username, password_hash):
         sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
         db.execute(sql, [username, password_hash])
         flash("Rekisteröityminen onnistui! Kirjaudu sisään.", "success")
-        return redirect("/login")
+        return redirect(f"/login?username={username}")
     except sqlite3.IntegrityError:
         flash("VIRHE: tunnus on jo varattu", "error")
         return redirect("/register")
@@ -30,7 +30,7 @@ def get_user(username, password):
         user_id = query[0][0]
     except IndexError:
         flash("VIRHE: tapahtui virhe. Tarkista käyttäjätunnus ja salasana.", "error")
-        return redirect("/login")
+        return redirect(f"/login?username={username}")
 
     if check_password_hash(password_hash, password):
         session["user_id"] = user_id
@@ -39,4 +39,4 @@ def get_user(username, password):
         return redirect("/")
 
     flash("VIRHE: tapahtui virhe. Tarkista käyttäjätunnus ja salasana.", "error")
-    return redirect("/login")
+    return redirect(f"/login?username={username}")

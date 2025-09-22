@@ -10,7 +10,7 @@
         <form class="login__input-container" method="post" action="/api/login">
             <label class="login__input-label">
                 Käyttäjätunnus: 
-                <input name="username" />
+                <input name="username" value="{{request.args.get('username') if request.args.get('username') else ''}}" />
             </label>
             <label class="login__input-label">
                 Salasana: 
