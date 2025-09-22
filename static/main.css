@@ -121,9 +121,8 @@ a {
 /* MESSAGES */
 .message {
     position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 2rem;
+    left: 0;
     background-color: white;
     border-radius: 10px;
     text-align: center;
