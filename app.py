@@ -89,6 +89,25 @@ def new_exercise_page():
     categories = categoryService.get_categories()
     return render_template("new_exercise.html", categories=categories)
 
+@app.route("/harjoitteet/<int:exercise_id>", methods=["GET"])
+@require_login
+def single_exercise_page(exercise_id):
+    """Single exercise page"""
+
+    referrer = request.args.get("referrer")
+    exercise = exerciseService.get_exercise(exercise_id, session["user_id"])
+    categories = categoryService.get_categories()
+    print(exercise["description"])
+    if not exercise:
+        abort(404)
+    return render_template(
+        "single.html", 
+        exercise=exercise,
+        categories=categories,
+        referrer=referrer
+    )
+
+
 @app.route("/harjoitteet/<int:exercise_id>/muokkaa", methods=["GET"])
 @require_login
 def edit_exercise_page(exercise_id):

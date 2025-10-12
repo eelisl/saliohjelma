@@ -20,7 +20,9 @@
                 {% if not e.completed_at %}
                 <div class="exercises__item--undone"> 
                     <div class="exercises__item--text-container">
-                        <h3 class="exercises__item--title">{{ e.title }}</h3>
+                        <a href="/harjoitteet/{{e.id}}">
+                            <h3 class="exercises__item--title">{{ e.title }}</h3>
+                        </a>
                     </div>
                     <div class="button-group">
                         <form class="column" method="POST" action="/api/exercise/{{e.id}}/done">
@@ -54,7 +56,9 @@
                 {% if ed.completed_at %}
                 <div class="exercises__item"> 
                     <div class="exercises__item--text-container">
-                        <h3 class="exercises__item--title">{{ ed.title }}</h3>
+                        <a href="/harjoitteet/{{ed.id}}">
+                            <h3 class="exercises__item--title">{{ ed.title }}</h3>
+                        </a>
                         <p class="exercises__item--info">{{ ed.goal_set_amount }} x {{ ed.goal_rep_amount }} x {{ ed.goal_weight}}kg</p>
                     </div>
                     <div class="exercises__item--text-container">

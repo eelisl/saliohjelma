@@ -20,7 +20,9 @@
             {% for e in exercises %}
                 <div class="exercises__item"> 
                     <div class="exercises__item--text-container">
-                        <h3 class="exercises__item--title">{{ e.title }}</h3>
+                        <a href="/harjoitteet/{{e.id}}">
+                            <h3 class="exercises__item--title">{{ e.title }}</h3>
+                        </a>
                         <p class="exercises__item--info">{{ e.goal_set_amount }} x {{ e.goal_rep_amount }} x {{ e.goal_weight}}kg</p>
                         <p class="exercises__item--info">{{ e.category_label }}</p>
                     </div>

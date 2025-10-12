@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}Harjoite{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <h1>Harjoite: {{exercise.title}}</h1>
+    <div>
+    <div class="fp__exercises">
+
+        <div class="fp__exercises-container--single">
+            <div class="exercises__item--text-container">
+                <h3 class="exercises__item--title">{{ exercise.title }}</h3>
+                <p class="exercises__item--info">{{ exercise.goal_set_amount }} x {{ exercise.goal_rep_amount }} x {{ exercise.goal_weight}}kg</p>
+                <p class="exercises__item--info">{{ exercise.category_label }}</p>
+            </div>
+            <div>
+                <p>Ohjeet:</p>
+                <p>
+                    {{exercise.description | show_lines}}
+                </p>
+            </div>
+            <form method="POST" action="/api/exercise/{{exercise.id}}/category">
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
+                <input type="hidden" name="page" value="{{page}}"/>
+                <label>
+                    Kategoria
+                    <select name="category_id">
+                        {% for category in categories %}
+                            <option value="{{category.id}}" {{"selected" if category.id == exercise.category_id else ""}}>{{ category.label }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+                <button>Muokkaa</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
