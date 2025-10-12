@@ -2,6 +2,7 @@
 from functools import wraps
 from math import ceil
 import time
+import datetime
 from flask import Flask, render_template, session, redirect, request, flash, abort
 from flask import g
 import markupsafe
@@ -159,7 +160,16 @@ def exercise_page():
 
     query = request.args.get("query")
     exercises = exerciseService.get_user_exercises_with_today_stats(session["user_id"], query)
-    return render_template("exercise.html", exercises=exercises, query=query)
+    today_end_time = datetime.datetime.combine(
+        datetime.date.today(), datetime.time(23, 59, 59)
+    ).strftime("%Y-%m-%d %H:%M:%S")
+
+    return render_template(
+        "exercise.html", 
+        exercises=exercises,
+        query=query,
+        today_end_time=today_end_time
+    )
 
 @app.route("/harjoitteet", methods=["GET"])
 @require_login

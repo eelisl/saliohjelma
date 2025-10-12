@@ -14,10 +14,12 @@
                 <button>Etsi</button>
             </form> 
         </div>
+        <p>Näet täällä tekemäsi saliohjelman. Voit suorittaa harjoitteen muokkaamalla toistot ja painot sekä painamalla tehty.</p>
+        <p>Tehdyt harjoitteet ovat päiväkohtaisia. Harjoitteet nollaantuu takaisin tekemättömiksi keskiyöllä.</p>
         <div class="fp__exercises-container--undone">
             <h2>Tekemättä</h2>
             {% for e in exercises%}
-                {% if not e.completed_at %}
+                {% if not e.completed_at or e.completed_at > today_end_time %}
                 <div class="exercises__item--undone"> 
                     <div class="exercises__item--text-container">
                         <a href="/harjoitteet/{{e.id}}">
@@ -53,7 +55,7 @@
             <h2>Tehty</h2>
             <div class="fp__exercises-container">
             {% for ed in exercises%}
-                {% if ed.completed_at %}
+                {% if ed.completed_at and ed.completed_at <= today_end_time %}
                 <div class="exercises__item"> 
                     <div class="exercises__item--text-container">
                         <a href="/harjoitteet/{{ed.id}}">
