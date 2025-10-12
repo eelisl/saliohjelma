@@ -11,7 +11,7 @@
         <div class="fp__exercises--title-container">
             <h2>Harjoitteet</h2>
             <form class="search-form">
-                <input name="query" value='{{ query }}'/>
+                <input name="query" value='{{ query if query else "" }}'/>
                 <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
                 <button>Etsi</button>
             </form> 

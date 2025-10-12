@@ -12,7 +12,7 @@
             <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
             <label class="exercise__input-label">
                 Harjoitteen nimi
-                <input name="title" value="{{exercise.title}}" required maxlength="100"/>
+                <input name="title" value="{{exercise.title}}" required maxlength="40"/>
             </label>
             <div class="exercise__input-group">
                 <label class="exercise__select">
