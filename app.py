@@ -216,21 +216,21 @@ def new_exercise():
     description = request.form["description"]
     category_id = request.form["category_id"]
 
-    if not title or not 1 < len(title) < 150:
-        flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 150 merkkiä pitkä.", "error")
-        redirect("/uusi")
+    if not title or not 1 < len(title) < 40:
+        flash("Harjoitteen nimen tulee olla vähintään 1 ja enintään 40 merkkiä pitkä.", "error")
+        return redirect("/uusi")
 
     if not set_amount or not 1 < int(set_amount) < 5:
         flash("Settejä tulee olla vähintään 1 ja enintään 5.", "error")
-        redirect("/uusi")
+        return redirect("/uusi")
 
     if not rep_amount or not 1 < int(rep_amount) < 50:
         flash("Toistoja tulee olla vähintään 1 ja enintään 50.", "error")
-        redirect("/uusi")
+        return redirect("/uusi")
 
     if int(weight) >= 200:
         flash("Okei iso poika, luulet itsestäsi liikoja, laske kiloja :D", "error")
-        redirect("/uusi")
+        return redirect("/uusi")
 
     exerciseService.create_exercise([
         user_id,
