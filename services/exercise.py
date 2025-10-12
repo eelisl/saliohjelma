@@ -84,7 +84,7 @@ def delete_exercise(exercise_id, user_id):
 def get_user_exercises_with_stats(user_id, query, page_size, page):
     """Get exercises of an user with completion stats"""
     sql = """SELECT
-                s.set_amount, s.rep_amount, s.completed_at, e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
+                s.set_amount, s.rep_amount, s.weight, s.completed_at, e.id, e.title, e.description, e.goal_weight, e.goal_set_amount, e.goal_rep_amount
              FROM stats s
              JOIN exercises e
                 ON s.exercise_id = e.id 
