@@ -77,6 +77,9 @@ def edit_exercise(values):
 
 def delete_exercise(exercise_id, user_id):
     """Delete exercise of an specific user"""
+    sql_stats = "DELETE FROM stats WHERE exercise_id = ? AND user_id = ?"
+    db.execute(sql_stats, [exercise_id, user_id])
+
     sql = "DELETE FROM exercises WHERE id = ? AND user_id = ?"
     db.execute(sql, [exercise_id, user_id])
     return True
