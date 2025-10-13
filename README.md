@@ -1,5 +1,7 @@
 # Saliohjelma
 
+Saliohjelma-sovellus on MVP ohjelma saliharjoitteluun. Sovelluksen avulla pystyt lisäämään, poistamaan ja muokkaamaan omia harjoitteitasi omaan ohjelmaan. "Harjoittele"-kohdassa voit merkitä harjoituksia tehdyksi esimerkiksi salilla käynnin aikana, harjoitusten nollaantuessa automaattisesti päivän päätteeksi. Voit lisäksi nähdä inspiraatioksi muiden tekemiä harjoitteita ja tarvittaessa korjata harjoitteiden kategorioita. Omassa profiilissasi näet mielenkiintoista statistiikkaa harjoituksistasi.
+
 ## Sovelluksen toiminnot
 
 -   Käyttäjä pystyy luomaan tunnuksen ja kirjautumaan sisään sovellukseen.
